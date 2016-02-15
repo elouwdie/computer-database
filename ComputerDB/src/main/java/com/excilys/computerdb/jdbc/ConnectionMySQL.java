@@ -17,7 +17,7 @@ import com.excilys.computerdb.exceptions.DAOConfigurationException;
  */
 public class ConnectionMySQL {
 
-	private static final String PROPERTIES = "com/excilys/computerdb/jdbc/jdbc.properties";
+	private static final String PROPERTIES = "jdbc.properties";
 
 	private static final String URL = "url";
 
@@ -25,29 +25,22 @@ public class ConnectionMySQL {
 
 	private static final String PASSWORD = "motdepasse";
 
-	private static ConnectionMySQL connectionMySQL = new ConnectionMySQL();
+	private static final String DRIVER = "driver";
+
+	private String url;
+	private String user;
+	private String password;
+	private String driver;
+
+	private static ConnectionMySQL connectionMySQL;
 
 	static {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			throw new DAOConfigurationException("Le driver est introuvable dans le classpath.", e);
-		}
-	}
 
-	private ConnectionMySQL() {
-	}
-
-	public static ConnectionMySQL getInstance() {
-		return connectionMySQL;
-	}
-
-	public static Connection getConnection() throws DAOConfigurationException {
-		Connection connection = null;
 		Properties properties = new Properties();
 		String url = null;
 		String user = null;
 		String passwd = null;
+		String driver = null;
 
 		// Loading the .properties file containing user's ID and password
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -60,6 +53,8 @@ public class ConnectionMySQL {
 			url = properties.getProperty(URL);
 			user = properties.getProperty(USER);
 			passwd = properties.getProperty(PASSWORD);
+			driver = properties.getProperty(DRIVER);
+
 		} catch (IOException e) {
 			throw new DAOConfigurationException("Impossible de charger le fichier properties " + PROPERTIES, e);
 		} finally {
@@ -68,14 +63,48 @@ public class ConnectionMySQL {
 			} catch (IOException e) {
 			}
 		}
-		// Connection to the database using the user's ID and password
+
 		try {
-			if (connection == null) {
-				return connection = DriverManager.getConnection(url, user, passwd);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			throw new DAOConfigurationException("Le driver est introuvable dans le classpath.", e);
 		}
-		return connection;
+		connectionMySQL = new ConnectionMySQL(url, user, passwd, driver);
 	}
+
+	private ConnectionMySQL(String url, String user, String password, String driver) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
+		this.driver = driver;
+	}
+
+	public static ConnectionMySQL getInstance() {
+		return connectionMySQL;
+	}
+
+	public Connection getConnection() throws DAOConfigurationException {
+		try {
+			return DriverManager.getConnection(url, user, password);
+		} catch (SQLException e) {
+			throw new DAOConfigurationException(e);
+		}
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getDriver() {
+		return driver;
+	}
+	
 }

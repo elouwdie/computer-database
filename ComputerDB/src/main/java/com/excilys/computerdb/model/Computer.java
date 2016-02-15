@@ -20,19 +20,6 @@ public class Computer {
 
 	}
 
-	public Computer(long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
-		this.id = id;
-		this.name = name;
-		this.introduced = introduced;
-		this.discontinued = discontinued;
-		this.company = company;
-	}
-
 	public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.name = name;
 		this.introduced = introduced;
@@ -78,6 +65,47 @@ public class Computer {
 
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result *= id;
+		result *= name.hashCode();
+		result = introduced != null ? result*introduced.hashCode() : result;
+		result = discontinued != null ? result*discontinued.hashCode() : result;
+		result = company != null ? result*company.hashCode() : result;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		if (this.id == ((Computer) obj).getId() && this.name.equals(((Computer) obj).getName())) {
+			if(this.introduced != null && this.introduced.equals(((Computer)obj).getIntroduced())) {
+				if(this.discontinued != null && this.discontinued.equals(((Computer)obj).getDiscontinued())) {
+					if(this.company != null && this.company.equals(((Computer)obj).getCompany())) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		if(toString().equals(((Computer)obj).toString())) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

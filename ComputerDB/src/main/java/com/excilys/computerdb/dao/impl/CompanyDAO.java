@@ -11,23 +11,23 @@ import java.util.List;
 import com.excilys.computerdb.dao.DAO;
 import com.excilys.computerdb.exceptions.DAOException;
 import com.excilys.computerdb.jdbc.ConnectionMySQL;
+import com.excilys.computerdb.mapper.Mapper;
 import com.excilys.computerdb.model.Company;
 
 public class CompanyDAO implements DAO<Company> {
 
-	@Override
-	public List<Company> findAll() {
+	
+	public List<Company> findAll(int min, int max) {
+		//TODO modifier
 		Company company = new Company();
 		List<Company> companies = new ArrayList<>();
 
-		try (Connection connect = ConnectionMySQL.getConnection(); Statement statement = connect.createStatement();) {
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection(); Statement statement = connect.createStatement();) {
 			ResultSet resultSet = statement.executeQuery("SELECT id, name  FROM company");
 
-			if (resultSet.first()) {
-				resultSet.beforeFirst();
-
+			if (resultSet != null) {
 				while (resultSet.next()) {
-					company = new Company(resultSet.getLong("id"), resultSet.getString("name"));
+					company = Mapper.companyMap(resultSet);
 					companies.add(company);
 				}
 			}
@@ -43,12 +43,13 @@ public class CompanyDAO implements DAO<Company> {
 	public Company findById(long id) {
 		Company company = null;
 
-		try (Connection connect = ConnectionMySQL.getConnection();
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement("SELECT * FROM company WHERE id = ?");) {
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.first()) {
-				company = new Company(id, resultSet.getString("name"));
+
+			if (resultSet != null && resultSet.next()) {
+				company = Mapper.companyMap(resultSet);
 			}
 			resultSet.close();
 
@@ -58,9 +59,4 @@ public class CompanyDAO implements DAO<Company> {
 		return company;
 	}
 
-	@Override
-	public boolean exists(Company company) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

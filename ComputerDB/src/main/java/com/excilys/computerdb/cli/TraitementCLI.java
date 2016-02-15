@@ -1,7 +1,6 @@
 package com.excilys.computerdb.cli;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,6 +11,7 @@ import com.excilys.computerdb.dao.impl.CompanyDAO;
 import com.excilys.computerdb.dao.impl.ComputerDAO;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
+import com.excilys.computerdb.pages.Page;
 import com.excilys.computerdb.service.DataVerification;
 
 public class TraitementCLI {
@@ -66,11 +66,25 @@ public class TraitementCLI {
 	 */
 	private static void findAllComputers() {
 		ComputerDAO dao = new ComputerDAO();
-
-		List<Computer> computers = new ArrayList<>();
-		computers = dao.findAll();
-		for (Computer c : computers) {
-			System.out.println("ID : " + c.getId() + " name : " + c.getName());
+		Page page = new Page(dao, 30);
+		int indice = 0;
+		while (indice <= page.getTotalNbPages()) {
+			List<Computer> computersPrint = page.nextPage();
+			System.out.println("**********************************");
+			for (Computer c : computersPrint) {
+				System.out.println("ID : " + c.getId() + " name : " + c.getName());
+			}
+			System.out.println("Next page (n) - return back (r)");
+			switch (repUtilisateur.next()) {
+			case "n":
+				indice += 1;
+				break;
+			case "r":
+				indice = page.getTotalNbPages() + 1;
+				break;
+			default:
+				System.out.println("commande inconnue");
+			}
 		}
 	}
 
@@ -149,7 +163,8 @@ public class TraitementCLI {
 				discont = enterDate();
 				ok = DataVerification.areDatesOk(intro, discont);
 				if (!ok) {
-					log.error("Discontinued date must be after introduction date. Please retry with a date after {}.", intro);
+					log.error("Discontinued date must be after introduction date. Please retry with a date after {}.",
+							intro);
 				}
 			} while (!ok);
 		}
@@ -210,13 +225,14 @@ public class TraitementCLI {
 						boolean ok2 = false;
 						do {
 							discont = enterDate();
-							if(intro == null) {
+							if (intro == null) {
 								ok2 = true;
-							}
-							else {
+							} else {
 								ok2 = DataVerification.areDatesOk(intro, discont);
 								if (!ok2) {
-									log.error("Discontinued date must be after introduction date. Please retry with a date after {}.", intro);
+									log.error(
+											"Discontinued date must be after introduction date. Please retry with a date after {}.",
+											intro);
 								} else {
 									computer.setDiscontinued(discont);
 								}
@@ -263,7 +279,7 @@ public class TraitementCLI {
 					computer = dao.findById(repUtilisateur.nextLong());
 					// Verify if the computer exists
 					if (computer.getName() != null) {
-						//Deletes the computer in the database
+						// Deletes the computer in the database
 						dao.delete(computer.getId());
 						ok = true;
 						log.info("\nSuppression effectuée");

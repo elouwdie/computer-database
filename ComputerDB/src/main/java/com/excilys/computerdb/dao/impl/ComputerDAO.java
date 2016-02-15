@@ -6,14 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdb.dao.DAO;
 import com.excilys.computerdb.exceptions.DAOException;
 import com.excilys.computerdb.jdbc.ConnectionMySQL;
-import com.excilys.computerdb.model.Company;
+import com.excilys.computerdb.mapper.Mapper;
 import com.excilys.computerdb.model.Computer;
 
 /**
@@ -23,21 +22,40 @@ import com.excilys.computerdb.model.Computer;
  *
  */
 public class ComputerDAO implements DAO<Computer> {
+	int nbComputers;
 
+	public int getCount() {
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
+				Statement statement = connect.createStatement();) {
+			// SQL query
+			ResultSet resultSet = statement
+					.executeQuery("SELECT COUNT(*) FROM computer");
+
+			resultSet.next();
+			nbComputers = resultSet.getInt(1);
+			resultSet.close();
+
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+		return nbComputers;
+	}
+	
 	@Override
-	public List<Computer> findAll() {
-		Computer computer = new Computer();
+	public List<Computer> findAll(int min, int max) {
 		List<Computer> computers = new ArrayList<>();
 
-		try (Connection connect = ConnectionMySQL.getConnection(); Statement statement = connect.createStatement();) {
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
+				PreparedStatement statement = connect.prepareStatement("SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?");) {
 			// SQL query
-			ResultSet resultSet = statement.executeQuery("SELECT id, name  FROM computer");
+			statement.setInt(1, max);
+			statement.setInt(2, min);
 
+			ResultSet resultSet = statement.executeQuery();
 			// Creation of the list
-			if (resultSet.first()) {
-				resultSet.beforeFirst();
+			if (resultSet != null) {
 				while (resultSet.next()) {
-					computer = new Computer(resultSet.getLong("id"), resultSet.getString("name"));
+					Computer computer = Mapper.computerMap(resultSet);
 					computers.add(computer);
 				}
 			}
@@ -51,28 +69,15 @@ public class ComputerDAO implements DAO<Computer> {
 
 	@Override
 	public Computer findById(long id) {
-		Computer computer = new Computer();
-		Company company = null;
+		Computer computer = null;
 
-		try (Connection connect = ConnectionMySQL.getConnection();
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(
-						"SELECT o.*, c.* FROM computer o LEFT JOIN company c ON o.company_id = c.id WHERE o.id = ?");) {
+						"SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?");) {
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.first()) {
-				String name = resultSet.getString("o.name");
-				Timestamp introducedTmp = resultSet.getTimestamp("o.introduced");
-				LocalDate introduced = introducedTmp == null ? null : introducedTmp.toLocalDateTime().toLocalDate();
-				Timestamp discontinuedTmp = resultSet.getTimestamp("o.discontinued");
-				LocalDate discontinued = discontinuedTmp == null ? null
-						: discontinuedTmp.toLocalDateTime().toLocalDate();
-				Long cId = resultSet.getLong("o.company_id");
-				if (cId != 0) {
-					Long companyId = resultSet.getLong("c.id");
-					String companyName = resultSet.getString("c.name");
-					company = new Company(companyId, companyName);
-				}
-				computer = new Computer(id, name, introduced, discontinued, company);
+			if (resultSet != null && resultSet.next()) {
+				computer = Mapper.computerMap(resultSet);
 			}
 			resultSet.close();
 
@@ -90,7 +95,7 @@ public class ComputerDAO implements DAO<Computer> {
 	 */
 	public void create(Computer obj) throws DAOException {
 
-		try (Connection connect = ConnectionMySQL.getConnection();
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(
 						"INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)",
 						Statement.RETURN_GENERATED_KEYS);) {
@@ -114,7 +119,7 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.executeUpdate();
 
 			ResultSet resultSet = statement.getGeneratedKeys();
-			if (resultSet.first()) {
+			if (resultSet != null && resultSet.next()) {
 				obj.setId(resultSet.getLong(1));
 			}
 			resultSet.close();
@@ -132,7 +137,7 @@ public class ComputerDAO implements DAO<Computer> {
 	 *            : the computer to modify
 	 */
 	public void update(Computer obj) throws DAOException {
-		try (Connection connect = ConnectionMySQL.getConnection();
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement("UPDATE computer SET name = ?, introduced = ?, "
 						+ "discontinued = ?, company_id = ? WHERE id = ?");) {
 			statement.setString(1, obj.getName());
@@ -166,7 +171,7 @@ public class ComputerDAO implements DAO<Computer> {
 	 *            : the ID of the computer to delete
 	 */
 	public void delete(long id) throws DAOException {
-		try (Connection connect = ConnectionMySQL.getConnection();
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement("DELETE FROM computer WHERE id = ?");) {
 			statement.setLong(1, id);
 			statement.executeUpdate();
@@ -175,11 +180,4 @@ public class ComputerDAO implements DAO<Computer> {
 			throw new DAOException(e);
 		}
 	}
-
-	@Override
-	public boolean exists(Computer computer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

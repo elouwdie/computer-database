@@ -27,12 +27,6 @@ public interface DAO<T> {
 	 * 
 	 * @return : the list of all computers.
 	 */
-	List<T> findAll() throws DAOException;
-
-	/**
-	 * Verifies if the object obj exists in the database
-	 * @return true if obj exists in the database, false if it doesn't
-	 */
-	boolean exists(T obj) throws DAOException;
+	List<T> findAll(int min, int max) throws DAOException;
 
 }
