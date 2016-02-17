@@ -40,6 +40,24 @@ public class ComputerDAO implements DAO<Computer> {
 		}
 		return nbComputers;
 	}
+
+	public int getCountByName(String name) {
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
+				PreparedStatement statement = connect.prepareStatement("SELECT COUNT(*) FROM computer WHERE computer.name like ?");) {
+			// SQL query
+			statement.setString(1, "%" + name + "%");
+			ResultSet resultSet = statement
+					.executeQuery();
+
+			resultSet.next();
+			nbComputers = resultSet.getInt(1);
+			resultSet.close();
+
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+		return nbComputers;
+	}
 	
 	@Override
 	public List<Computer> findAll(int min, int max) {
@@ -85,6 +103,32 @@ public class ComputerDAO implements DAO<Computer> {
 			throw new DAOException(e);
 		}
 		return computer;
+	}
+
+	public List<Computer> findByName(String name, int min, int max) {
+		List<Computer> computers = new ArrayList<>();
+
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
+				PreparedStatement statement = connect.prepareStatement("SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name like ? LIMIT ? OFFSET ?");) {
+			// SQL query
+			statement.setString(1, "%" + name + "%");
+			statement.setInt(2, max);
+			statement.setInt(3, min);
+
+			ResultSet resultSet = statement.executeQuery();
+			// Creation of the list
+			if (resultSet != null) {
+				while (resultSet.next()) {
+					Computer computer = Mapper.computerMap(resultSet);
+					computers.add(computer);
+				}
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+		return computers;
 	}
 
 	/**

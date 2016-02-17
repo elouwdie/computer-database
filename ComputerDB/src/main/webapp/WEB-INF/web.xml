@@ -8,17 +8,33 @@
 
 	<servlet>
 
-		<servlet-name>Test</servlet-name>
+		<servlet-name>DashBoard</servlet-name>
 
-		<servlet-class>com.excilys.computerdb.controllers.Test</servlet-class>
+		<servlet-class>com.excilys.computerdb.controllers.DashBoard</servlet-class>
 
 	</servlet>
 
 	<servlet-mapping>
 
-		<servlet-name>Test</servlet-name>
+		<servlet-name>DashBoard</servlet-name>
 
-		<url-pattern>/bonjour</url-pattern>
+		<url-pattern>/computerdb</url-pattern>
+
+	</servlet-mapping>
+	
+	<servlet>
+
+		<servlet-name>addcomputer</servlet-name>
+
+		<servlet-class>com.excilys.computerdb.controllers.AddComputerMenu</servlet-class>
+
+	</servlet>
+
+	<servlet-mapping>
+
+		<servlet-name>addcomputer</servlet-name>
+
+		<url-pattern>/addcomputer</url-pattern>
 
 	</servlet-mapping>
 

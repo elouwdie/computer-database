@@ -17,7 +17,7 @@ import com.excilys.computerdb.model.Company;
 public class CompanyDAO implements DAO<Company> {
 
 	
-	public List<Company> findAll(int min, int max) {
+	public List<Company> findAll() {
 		//TODO modifier
 		Company company = new Company();
 		List<Company> companies = new ArrayList<>();
@@ -57,6 +57,12 @@ public class CompanyDAO implements DAO<Company> {
 			throw new DAOException(e);
 		}
 		return company;
+	}
+
+	@Override
+	public List<Company> findAll(int min, int max) throws DAOException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -17,27 +17,26 @@
 		<div class="container">
 			<a class="navbar-brand" href="dashboard.html"> Application -
 				Computer Database </a>
-		</div>offset sql
+		</div>
+		offset sql
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">
-				${size} Computers found
-			</h1>
+			<h1 id="homeTitle">${size} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
-
-						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" />
+						<input type="hidden" name="page" value="${currentPage}" /> <input
+							type="hidden" name="records" value="${records}" /> <input
+							type="search" id="searchbox" name="search" value = "${search}" class="form-control"
+							placeholder="Search name" /> <input type="submit"
+							id="searchsubmit" value="Filter by name" class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
 					<a class="btn btn-success" id="addComputer"
-						href="views/addComputer.html">Add Computer</a> <a
+						href="addcomputer">Add Computer</a> <a
 						class="btn btn-default" id="editComputer" href="#"
 						onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
@@ -64,21 +63,20 @@
 						</span></th>
 						<th>Computer name</th>
 						<th>Introduced date</th>
-						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date</th>
-						<!-- Table header for Company -->
 						<th>Company</th>
 
 					</tr>
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					
-					<c:forEach var="computer" items="${page.nextPage()}">
+
+					<c:forEach var="computer" items="${employeeList}">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
-							<td><a href="views/editComputer.html" onclick="">${computer.name}</a></td>
+							<td><a href="views/editComputer.html" onclick="">
+									${computer.name} </a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
 
@@ -92,23 +90,59 @@
 	</section>
 
 	<footer class="navbar-fixed-bottom">
-		<div class="container text-center">
-			<ul class="pagination">
-				<li><a href="#" aria-label="Previous"> <span
-						aria-hidden="true">&laquo;</span>
-				</a></li>
-				<c:forEach var="i" begin="1" end="${page.totalNbPages}" step="1">
-					<li><a href="#">${i}</a></li>
-				</c:forEach>
-				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-				</a></li>
-			</ul>
-		</div>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
+			<a type="button" class="btn btn-default"
+				href="computerdb?page=${currentPage}&records=10&search=${search}">10</a>
+			<a type="button" class="btn btn-default"
+				href="computerdb?page=${currentPage}&records=50&search=${search}">50</a>
+			<a type="button" class="btn btn-default"
+				href="computerdb?page=${currentPage}&records=100&search=${search}">100</a>
+		</div>
+
+		<div class="container text-center">
+			<ul class="pagination">
+				<li><a
+					href="computerdb?page=${currentPage - 1}&records=${records}&search=${search}"
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+				</a></li>
+				<c:choose>
+					<c:when test="${noOfPages - currentPage < 5}">
+						<c:set var="begin" value="${currentPage}" scope="page" />
+						<c:set var="end" value="${noOfPages}" scope="page" />
+
+					</c:when>
+					<c:when test="${currentPage < 6}">
+						<c:set var="begin" value="1" scope="page" />
+						<c:set var="end" value="9" scope="page" />
+
+					</c:when>
+					<c:otherwise>
+						<c:set var="begin" value="${currentPage - 4}" scope="page" />
+						<c:set var="end" value="${currentPage + 4}" scope="page" />
+
+					</c:otherwise>
+				</c:choose>
+
+				<c:forEach var="i" begin="${begin}" end="${end}" step="1">
+					<c:choose>
+						<c:when test="${currentPage eq i }">
+							<li><a href="#">${i}</a></li>
+						</c:when>
+						<c:otherwise>
+							<li><a
+								href="computerdb?page=${i}&records=${records}&search=${search}">${i}</a></li>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+
+				<c:if test="${currentPage lt noOfPages}">
+					<li><a
+						href="computerdb?page=${currentPage + 1}&records=${records}&search=${search}"
+						aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+					</a></li>
+				</c:if>
+			</ul>
 		</div>
 
 	</footer>

@@ -69,7 +69,7 @@ public class TraitementCLI {
 		Page page = new Page(dao, 30);
 		int indice = 0;
 		while (indice <= page.getTotalNbPages()) {
-			List<Computer> computersPrint = page.nextPage();
+			List<Computer> computersPrint = page.getPage(0, 10);
 			System.out.println("**********************************");
 			for (Computer c : computersPrint) {
 				System.out.println("ID : " + c.getId() + " name : " + c.getName());
