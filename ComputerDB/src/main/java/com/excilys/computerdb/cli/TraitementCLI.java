@@ -1,18 +1,18 @@
 package com.excilys.computerdb.cli;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdb.dao.impl.CompanyDAO;
-import com.excilys.computerdb.dao.impl.ComputerDAO;
+import com.excilys.computerdb.exceptions.DataException;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.pages.Page;
-import com.excilys.computerdb.service.DataVerification;
+import com.excilys.computerdb.service.CompanyService;
+import com.excilys.computerdb.service.ComputerService;
+import com.excilys.computerdb.validation.DataVerification;
 
 public class TraitementCLI {
 
@@ -65,22 +65,23 @@ public class TraitementCLI {
 	 * Returns the list of all computers in the database.
 	 */
 	private static void findAllComputers() {
-		ComputerDAO dao = new ComputerDAO();
-		Page page = new Page(dao, 30);
-		int indice = 0;
-		while (indice <= page.getTotalNbPages()) {
-			List<Computer> computersPrint = page.getPage(0, 10);
+		int nbComputers = ComputerService.getCount();
+		Page page = new Page(1, nbComputers, 30);
+		while (page.getNumber() <= page.getTotalNbPages()) {
+			ComputerService.findAll(page);
+			;
 			System.out.println("**********************************");
-			for (Computer c : computersPrint) {
+			for (Computer c : page.getComputers()) {
 				System.out.println("ID : " + c.getId() + " name : " + c.getName());
 			}
 			System.out.println("Next page (n) - return back (r)");
 			switch (repUtilisateur.next()) {
 			case "n":
-				indice += 1;
+				page.setNumber(page.getNumber() + 1);
+				;
 				break;
 			case "r":
-				indice = page.getTotalNbPages() + 1;
+				page.setNumber(page.getTotalNbPages() + 1);
 				break;
 			default:
 				System.out.println("commande inconnue");
@@ -93,7 +94,6 @@ public class TraitementCLI {
 	 * enters the computer's ID.
 	 */
 	private static void searchComputer() {
-		ComputerDAO dao = new ComputerDAO();
 		boolean ok = false;
 
 		do {
@@ -101,7 +101,7 @@ public class TraitementCLI {
 			if (repUtilisateur.hasNextLong()) {
 				{
 					Computer computer = null;
-					computer = dao.findById(repUtilisateur.nextLong());
+					computer = ComputerService.findById(repUtilisateur.nextLong());
 					// Verify if the computer exists
 					if (computer.getName() != null) {
 						System.out.println(computer.toString());
@@ -118,7 +118,6 @@ public class TraitementCLI {
 	 * enters the company's ID.
 	 */
 	private static void searchCompany() {
-		CompanyDAO dao = new CompanyDAO();
 		boolean ok = false;
 
 		do {
@@ -126,7 +125,7 @@ public class TraitementCLI {
 			if (repUtilisateur.hasNextLong()) {
 				{
 					Company company = null;
-					company = dao.findById(repUtilisateur.nextLong());
+					company = CompanyService.findById(repUtilisateur.nextLong());
 					// Verify if the company exists
 					if (company.getName() != null) {
 						ok = true;
@@ -143,7 +142,6 @@ public class TraitementCLI {
 	 * detail, but the name is a required field
 	 */
 	private static void createComputer() {
-		ComputerDAO dao = new ComputerDAO();
 		LocalDate intro = null;
 		LocalDate discont = null;
 		Company company = null;
@@ -151,33 +149,33 @@ public class TraitementCLI {
 		System.out.println("\nEnter the name of the computer: ");
 		String name = repUtilisateur.next();
 		// introduction date
-		System.out.println("\nEnter the introduction date of the computer ? y/n");
-		if (repUtilisateur.next().equals("y")) {
-			intro = enterDate();
-		}
-		// discontinued date
-		System.out.println("\nEnter the date when computer discontinued ? y/n");
-		if (repUtilisateur.next().equals("y")) {
-			boolean ok = false;
-			do {
-				discont = enterDate();
-				ok = DataVerification.areDatesOk(intro, discont);
-				if (!ok) {
-					log.error("Discontinued date must be after introduction date. Please retry with a date after {}.",
-							intro);
+		boolean ok = false;
+		do {
+			System.out.println("\nEnter the introduction date of the computer ? y/n");
+			if (repUtilisateur.next().equals("y")) {
+				intro = enterDate();
+			}
+			// discontinued date
+			System.out.println("\nEnter the date when computer discontinued ? y/n");
+			if (repUtilisateur.next().equals("y")) {
+				try {
+					discont = enterDate();
+					DataVerification.areDatesOk(intro, discont);
+					ok = true;
+				} catch (DataException e) {
+					log.error(e.getMessage());
 				}
-			} while (!ok);
-		}
+			}
+		} while (!ok);
 		// company ID
 		System.out.println("\nEnter the company ID ? y/n");
 		if (repUtilisateur.next().equals("y")) {
-			boolean ok = false;
-			while (!ok) {
+			boolean ok2 = false;
+			while (!ok2) {
 				System.out.println("\nCompany ID ?");
 				if (repUtilisateur.hasNextLong()) {
-					CompanyDAO cDao = new CompanyDAO();
-					company = cDao.findById(repUtilisateur.nextLong());
-					ok = (company != null);
+					company = CompanyService.findById(repUtilisateur.nextLong());
+					ok2 = (company != null);
 				} else {
 					log.error("This ID is not valid.");
 				}
@@ -185,7 +183,7 @@ public class TraitementCLI {
 		}
 		// Creates the computer in the database
 		Computer computer = new Computer(name, intro, discont, company);
-		dao.create(computer);
+		ComputerService.create(computer);
 	}
 
 	/**
@@ -193,74 +191,68 @@ public class TraitementCLI {
 	 * the name of the computer, the dates, and the company.
 	 */
 	private static void updateComputer() {
-		ComputerDAO dao = new ComputerDAO();
-		LocalDate intro = null;
-		LocalDate discont = null;
-		Company company = null;
+		long companyId = 0;
 		Computer computer = null;
 		boolean ok = false;
 
 		do {
 			System.out.println("\nEnter the id of the computer to update: " + "\nr : return back");
 			if (repUtilisateur.hasNextLong()) {
-				computer = dao.findById(repUtilisateur.nextLong());
+				computer = ComputerService.findById(repUtilisateur.nextLong());
 				// Verify if the computer exists
 				if (computer.getName() != null) {
 
-					System.out.println("\nModisy the name of the computer ? y/n ");
+					System.out.println("\nModify the name of the computer ? y/n ");
 					if (repUtilisateur.next().equals("y")) {
 						System.out.println("\nEnter the new name of the computer : ");
 						String name = repUtilisateur.next();
 						computer.setName(name);
 					}
-					// introduction date
-					System.out.println("\nEnter the introduction date of the computer ? y/n");
-					if (repUtilisateur.next().equals("y")) {
-						intro = enterDate();
-						computer.setIntroduced(intro);
-					}
-					// Discondinued date
-					System.out.println("\nEnter the date when computer discontinued ? y/n");
-					if (repUtilisateur.next().equals("y")) {
-						boolean ok2 = false;
-						do {
+					LocalDate intro = computer.getIntroduced();
+					LocalDate discont = computer.getDiscontinued();
+					boolean datesOk = false;
+					do {
+						// introduction date
+						System.out.println("\nEnter the introduction date of the computer ? y/n");
+						if (repUtilisateur.next().equals("y")) {
+							intro = enterDate();
+						}
+						// Discondinued date
+						System.out.println("\nEnter the date when computer discontinued ? y/n");
+						if (repUtilisateur.next().equals("y")) {
 							discont = enterDate();
-							if (intro == null) {
-								ok2 = true;
-							} else {
-								ok2 = DataVerification.areDatesOk(intro, discont);
-								if (!ok2) {
-									log.error(
-											"Discontinued date must be after introduction date. Please retry with a date after {}.",
-											intro);
-								} else {
-									computer.setDiscontinued(discont);
-								}
-							}
-						} while (!ok2);
-					}
+						}
+						try {
+							DataVerification.areDatesOk(intro, discont);
+							computer.setIntroduced(intro);
+							computer.setDiscontinued(discont);
+							datesOk = true;
+						} catch (DataException e) {
+							log.error(e.getMessage());
+						}
+					} while (!datesOk);
 					// Company ID
 					System.out.println("\nEnter the company ID ? y/n");
 					if (repUtilisateur.next().equals("y")) {
-						boolean ok2 = false;
-						while (!ok2) {
+						do {
 							System.out.println("\nCompany ID ?");
 							if (repUtilisateur.hasNextLong()) {
-								CompanyDAO cDao = new CompanyDAO();
-								company = cDao.findById(repUtilisateur.nextLong());
-								ok2 = (company != null);
+								companyId = repUtilisateur.nextLong();
 							} else {
 								log.error("This ID is not valid.");
 							}
-						}
-						computer.setCompany(company);
+						} while (!DataVerification.isCompanyOk(companyId));
+						computer.setCompany(CompanyService.findById(companyId));
 					}
+
 				}
 			}
 			// Updating the database
-			dao.update(computer);
+			ComputerService.update(computer);
+			ok = true;
 			log.info("Modification complete");
 		} while (!repUtilisateur.nextLine().trim().equals("r") && ok == false);
+
 	}
 
 	/**
@@ -268,7 +260,6 @@ public class TraitementCLI {
 	 * user enters the computer's ID.
 	 */
 	private static void deleteComputer() {
-		ComputerDAO dao = new ComputerDAO();
 		boolean ok = false;
 
 		do {
@@ -276,13 +267,13 @@ public class TraitementCLI {
 			if (repUtilisateur.hasNextLong()) {
 				{
 					Computer computer = null;
-					computer = dao.findById(repUtilisateur.nextLong());
+					computer = ComputerService.findById(repUtilisateur.nextLong());
 					// Verify if the computer exists
 					if (computer.getName() != null) {
 						// Deletes the computer in the database
-						dao.delete(computer.getId());
+						ComputerService.delete(computer.getId());
 						ok = true;
-						log.info("\nSuppression effectuée");
+						log.info("\nSuppression done.");
 					} else
 						log.error("This ID is not valid.");
 				}

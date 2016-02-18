@@ -24,7 +24,8 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addcomputer" method="POST">
+					<form action="addcomputer" id="add" method="POST"
+						novalidate="novalidate">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
@@ -44,7 +45,7 @@
 							<div class="form-group">
 								<label for="companyId">Company</label> <select name="companyId"
 									class="form-control" id="companyId">
-
+									<option value="0">--</option>
 									<c:forEach var="i" begin="1" end="${companies.size()}" step="1">
 										<option value="${i}">${companies.get(i - 1).getName()}</option>
 									</c:forEach>
@@ -60,5 +61,31 @@
 			</div>
 		</div>
 	</section>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery.validate.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#add").validate({
+				rules : {
+					"computerName" : {
+						required : true
+					},
+					"introduced" : {
+						required : false,
+						date : true
+					},
+					"discontinued" : {
+						required : false,
+						date : true
+					}
+				},
+				messages : {
+					"computerName" : {
+						required : 'A name is required.'
+					}
+				}
+			});
+		});
+	</script>
 </body>
 </html>

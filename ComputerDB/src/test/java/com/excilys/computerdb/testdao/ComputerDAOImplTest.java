@@ -9,16 +9,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.excilys.computerdb.dao.impl.CompanyDAO;
-import com.excilys.computerdb.dao.impl.ComputerDAO;
+import com.excilys.computerdb.dao.impl.CompanyDAOImpl;
+import com.excilys.computerdb.dao.impl.ComputerDAOImpl;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
+import com.excilys.computerdb.pages.Page;
 import com.excilys.computerdb.testdatabase.DBTestConnector;
 
 public class ComputerDAOImplTest {
 
-	private static CompanyDAO companyDAO;
-	private static ComputerDAO computerDAO;
+	private static CompanyDAOImpl companyDAO;
+	private static ComputerDAOImpl computerDAO;
 	private static Company company;
 	private static Computer computer;
 
@@ -32,8 +33,8 @@ public class ComputerDAOImplTest {
 		cfm.initSchema("src/test/resources/schema.sql");
 		cfm.initDataSource();
 
-		companyDAO = new CompanyDAO();
-		computerDAO = new ComputerDAO();
+		companyDAO = new CompanyDAOImpl();
+		computerDAO = new ComputerDAOImpl();
 		company = new Company();
 		company.setId(1);
 		company.setName("Excilys");
@@ -62,7 +63,7 @@ public class ComputerDAOImplTest {
 
 	@Test
 	public void testAllCompany() {
-		assertTrue(companyDAO.findAll(1, 10).size() > 0);
+		assertTrue(companyDAO.findAll().size() > 0);
 	}
 
 	@Test
@@ -72,7 +73,7 @@ public class ComputerDAOImplTest {
 
 	@Test
 	public void testAllComputers() {
-		assertTrue(computerDAO.findAll(1, 10).size() > 0);
+		assertTrue(computerDAO.findAll(new Page(1, 10)).size() > 0);
 	}
 
 	@Test

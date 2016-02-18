@@ -8,26 +8,27 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.excilys.computerdb.dao.DAO;
+import com.excilys.computerdb.dao.CompanyDAO;
 import com.excilys.computerdb.exceptions.DAOException;
 import com.excilys.computerdb.jdbc.ConnectionMySQL;
-import com.excilys.computerdb.mapper.Mapper;
+import com.excilys.computerdb.mapper.MapperCompany;
 import com.excilys.computerdb.model.Company;
 
-public class CompanyDAO implements DAO<Company> {
+public class CompanyDAOImpl implements CompanyDAO {
 
-	
+	@Override
 	public List<Company> findAll() {
-		//TODO modifier
+		// TODO modifier
 		Company company = new Company();
 		List<Company> companies = new ArrayList<>();
 
-		try (Connection connect = ConnectionMySQL.getInstance().getConnection(); Statement statement = connect.createStatement();) {
+		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
+				Statement statement = connect.createStatement();) {
 			ResultSet resultSet = statement.executeQuery("SELECT id, name  FROM company");
 
 			if (resultSet != null) {
 				while (resultSet.next()) {
-					company = Mapper.companyMap(resultSet);
+					company = MapperCompany.companyMap(resultSet);
 					companies.add(company);
 				}
 			}
@@ -49,7 +50,7 @@ public class CompanyDAO implements DAO<Company> {
 			ResultSet resultSet = statement.executeQuery();
 
 			if (resultSet != null && resultSet.next()) {
-				company = Mapper.companyMap(resultSet);
+				company = MapperCompany.companyMap(resultSet);
 			}
 			resultSet.close();
 
@@ -58,11 +59,4 @@ public class CompanyDAO implements DAO<Company> {
 		}
 		return company;
 	}
-
-	@Override
-	public List<Company> findAll(int min, int max) throws DAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

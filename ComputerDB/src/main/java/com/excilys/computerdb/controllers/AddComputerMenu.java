@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.computerdb.dao.impl.CompanyDAO;
-import com.excilys.computerdb.dao.impl.ComputerDAO;
 import com.excilys.computerdb.dto.ComputerDTO;
-import com.excilys.computerdb.mapper.Mapper;
+import com.excilys.computerdb.exceptions.DataException;
+import com.excilys.computerdb.mapper.MapperComputerDTO;
 import com.excilys.computerdb.model.Company;
+import com.excilys.computerdb.model.Computer;
+import com.excilys.computerdb.service.CompanyService;
 
 public class AddComputerMenu extends HttpServlet {
 
@@ -21,18 +22,16 @@ public class AddComputerMenu extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		CompanyDAO companyDAO = new CompanyDAO();
-		List<Company> companies = companyDAO.findAll();
+		List<Company> companies = CompanyService.findAll();
 
 		request.setAttribute("companies", companies);
-		
+
 		this.getServletContext().getRequestDispatcher("/WEB-INF/addcomputermenu.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		ComputerDTO computerDTO = new ComputerDTO();
-		ComputerDAO computerDAO = new ComputerDAO();
 
 		String paramName = request.getParameter("computerName");
 		String paramIntroduced = request.getParameter("introduced");
@@ -49,14 +48,18 @@ public class AddComputerMenu extends HttpServlet {
 		}
 		if (paramDiscontinued != null) {
 			if (!paramDiscontinued.equals("")) {
-				computerDTO.setIntroduced(paramDiscontinued);
+				computerDTO.setDiscontinued(paramDiscontinued);
 			}
 		}
 		if (!paramCompanyId.equals("--")) {
 			computerDTO.setCompany(Integer.parseInt(request.getParameter("companyId")));
 		}
 
-		System.out.println(Mapper.DTOToComputer(computerDTO).toString());
+		try {
+			Computer computer = MapperComputerDTO.DTOToComputer(computerDTO);
+		} catch (DataException e) {
+			
+		}
 
 		doGet(request, response);
 	}

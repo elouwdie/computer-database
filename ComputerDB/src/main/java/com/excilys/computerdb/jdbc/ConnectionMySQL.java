@@ -12,7 +12,7 @@ import com.excilys.computerdb.exceptions.DAOConfigurationException;
 /**
  * Connection to the database
  * 
- * @author excilys
+ * @author ecayez
  * 
  */
 public class ConnectionMySQL {
@@ -106,5 +106,5 @@ public class ConnectionMySQL {
 	public String getDriver() {
 		return driver;
 	}
-	
+
 }
