@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.excilys.computerdb.exceptions.DAOConfigurationException;
+import com.excilys.computerdb.jdbc.exceptions.DAOConfigurationException;
 
 /**
  * Connection to the database
@@ -18,13 +18,9 @@ import com.excilys.computerdb.exceptions.DAOConfigurationException;
 public class ConnectionMySQL {
 
 	private static final String PROPERTIES = "jdbc.properties";
-
 	private static final String URL = "url";
-
 	private static final String USER = "nomutilisateur";
-
 	private static final String PASSWORD = "motdepasse";
-
 	private static final String DRIVER = "driver";
 
 	private String url;
@@ -106,5 +102,4 @@ public class ConnectionMySQL {
 	public String getDriver() {
 		return driver;
 	}
-
 }

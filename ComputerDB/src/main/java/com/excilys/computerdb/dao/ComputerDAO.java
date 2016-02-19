@@ -2,7 +2,7 @@ package com.excilys.computerdb.dao;
 
 import java.util.List;
 
-import com.excilys.computerdb.exceptions.DAOException;
+import com.excilys.computerdb.dao.exceptions.DAOException;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.pages.Page;
 

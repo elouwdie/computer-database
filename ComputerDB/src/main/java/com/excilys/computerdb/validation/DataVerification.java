@@ -2,8 +2,8 @@ package com.excilys.computerdb.validation;
 
 import java.time.LocalDate;
 
-import com.excilys.computerdb.exceptions.DataException;
 import com.excilys.computerdb.service.CompanyService;
+import com.excilys.computerdb.validation.exceptions.DataException;
 
 /**
  * Contains all possible verifications of the given data
@@ -20,11 +20,10 @@ public class DataVerification {
 	 *            the computer to verify
 	 * @return true if the introduction date is before the discontinuity
 	 */
-	public static void areDatesOk(LocalDate intro, LocalDate discont) {
+	public static void areDatesOk(LocalDate intro, LocalDate discont) throws DataException {
 		if (intro != null && discont != null) {
 			if (intro.compareTo(discont) > 0) {
-				throw new DataException(
-						"Discontinued date must be after introduction date. Please retry with a date after .");
+				throw new DataException("Discontinued date must be after introduction date.");
 			}
 		}
 	}

@@ -71,10 +71,10 @@ public class ComputerDAOImplTest {
 		assertEquals(company, companyDAO.findById(1));
 	}
 
-	@Test
-	public void testAllComputers() {
-		assertTrue(computerDAO.findAll(new Page(1, 10)).size() > 0);
-	}
+	/*
+	 * @Test public void testAllComputers() { assertTrue(computerDAO.findAll(new
+	 * Page(1, 10)).size() > 0); }
+	 */
 
 	@Test
 	public void testFindComputer() {

@@ -63,29 +63,8 @@
 	</section>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery.validate.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#add").validate({
-				rules : {
-					"computerName" : {
-						required : true
-					},
-					"introduced" : {
-						required : false,
-						date : true
-					},
-					"discontinued" : {
-						required : false,
-						date : true
-					}
-				},
-				messages : {
-					"computerName" : {
-						required : 'A name is required.'
-					}
-				}
-			});
-		});
-	</script>
+	<script src="js/additional-methods.js"></script>
+	<script src="js/verify-computer.js"></script>
+
 </body>
 </html>

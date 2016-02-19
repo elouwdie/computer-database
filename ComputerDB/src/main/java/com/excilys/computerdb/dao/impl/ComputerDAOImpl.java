@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdb.dao.ComputerDAO;
-import com.excilys.computerdb.exceptions.DAOException;
+import com.excilys.computerdb.dao.exceptions.DAOException;
 import com.excilys.computerdb.jdbc.ConnectionMySQL;
-import com.excilys.computerdb.mapper.MapperComputer;
+import com.excilys.computerdb.jdbc.exceptions.DAOConfigurationException;
+import com.excilys.computerdb.mapper.MapperDAOComputer;
+import com.excilys.computerdb.mapper.exceptions.MapperException;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.pages.Page;
 
@@ -37,41 +39,60 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 	@Override
 	public int getCount() {
+		ResultSet resultSet = null;
+		
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				Statement statement = connect.createStatement();) {
-			// SQL query
-			ResultSet resultSet = statement.executeQuery(SELECT_COUNT);
+
+			resultSet = statement.executeQuery(SELECT_COUNT);
 
 			resultSet.next();
 			nbComputers = resultSet.getInt(1);
 			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
+		}
+		finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return nbComputers;
 	}
 
 	@Override
 	public int getCountByName(String name) {
+		ResultSet resultSet = null;
+		
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COUNT + WHERE_NAME);) {
-			// SQL query
+			
 			statement.setString(1, "%" + name + "%");
-			ResultSet resultSet = statement.executeQuery();
+			resultSet = statement.executeQuery();
 
 			resultSet.next();
 			nbComputers = resultSet.getInt(1);
 			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
+		}
+		finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return nbComputers;
 	}
 
 	@Override
 	public List<Computer> findAll(Page page) {
+		ResultSet resultSet = null;
 		List<Computer> computers = new ArrayList<>();
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
@@ -80,37 +101,53 @@ public class ComputerDAOImpl implements ComputerDAO {
 			statement.setInt(2, page.getStart());
 			statement.setInt(1, page.getLimit());
 
-			ResultSet resultSet = statement.executeQuery();
+			resultSet = statement.executeQuery();
 			// Creation of the list
 			if (resultSet != null) {
 				while (resultSet.next()) {
-					Computer computer = MapperComputer.computerMap(resultSet);
+					Computer computer = MapperDAOComputer.computerMap(resultSet);
 					computers.add(computer);
 				}
 			}
 			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
+		}
+		finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return computers;
 	}
 
 	@Override
 	public Computer findById(long id) {
+		ResultSet resultSet = null;
 		Computer computer = null;
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT + WHERE_ID);) {
+			
 			statement.setLong(1, id);
-			ResultSet resultSet = statement.executeQuery();
+			resultSet = statement.executeQuery();
 			if (resultSet != null && resultSet.next()) {
-				computer = MapperComputer.computerMap(resultSet);
+				computer = MapperDAOComputer.computerMap(resultSet);
 			}
 			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
+		}
+		finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return computer;
 	}
@@ -118,61 +155,76 @@ public class ComputerDAOImpl implements ComputerDAO {
 	@Override
 	public List<Computer> findByName(String name, Page page) {
 		List<Computer> computers = new ArrayList<>();
+		ResultSet resultSet = null;
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT + WHERE_NAME + OFFSET_LIMIT);) {
-			// SQL query
+			
 			statement.setString(1, "%" + name + "%");
 			statement.setInt(3, page.getStart());
 			statement.setInt(2, page.getLimit());
-
-			ResultSet resultSet = statement.executeQuery();
+			resultSet = statement.executeQuery();
 			// Creation of the list
 			if (resultSet != null) {
 				while (resultSet.next()) {
-					Computer computer = MapperComputer.computerMap(resultSet);
+					Computer computer = MapperDAOComputer.computerMap(resultSet);
 					computers.add(computer);
 				}
 			}
 			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
+		}
+		finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return computers;
 	}
 
 	@Override
-	public void create(Computer obj) {
+	public void create(Computer computer) {
+		ResultSet resultSet = null;
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);) {
 
-			set(obj, statement);
+			set(computer, statement);
 
 			statement.executeUpdate();
 
-			ResultSet resultSet = statement.getGeneratedKeys();
+			resultSet = statement.getGeneratedKeys();
 			if (resultSet != null && resultSet.next()) {
-				obj.setId(resultSet.getLong(1));
+				computer.setId(resultSet.getLong(1));
 			}
 			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
+		}
+		finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 	}
 
 	@Override
-	public void update(Computer obj) {
+	public void update(Computer computer) {
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(UPDATE);) {
-
-			set(obj, statement);
-			statement.setLong(5, obj.getId());
+			
+			set(computer, statement);
+			statement.setLong(5, computer.getId());
 			statement.executeUpdate();
 			statement.close();
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
 		}
 	}
@@ -181,15 +233,16 @@ public class ComputerDAOImpl implements ComputerDAO {
 	public void delete(long id) {
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(DELETE);) {
+			
 			statement.setLong(1, id);
 			statement.executeUpdate();
 			statement.close();
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
 		}
 	}
 
-	public void set(Computer computer, PreparedStatement statement) {
+	public void set(Computer computer, PreparedStatement statement) throws DAOException {
 
 		try {
 			statement.setString(1, computer.getName());

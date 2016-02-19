@@ -8,16 +8,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.computerdb.cli.TraitementCLI;
 import com.excilys.computerdb.dto.ComputerDTO;
-import com.excilys.computerdb.exceptions.DataException;
-import com.excilys.computerdb.mapper.MapperComputerDTO;
+import com.excilys.computerdb.mapper.MapperDTOComputer;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.service.CompanyService;
+import com.excilys.computerdb.validation.exceptions.DataException;
 
 public class AddComputerMenu extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	static Logger log;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -32,6 +37,7 @@ public class AddComputerMenu extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		ComputerDTO computerDTO = new ComputerDTO();
+		log = LoggerFactory.getLogger(TraitementCLI.class);
 
 		String paramName = request.getParameter("computerName");
 		String paramIntroduced = request.getParameter("introduced");
@@ -56,9 +62,10 @@ public class AddComputerMenu extends HttpServlet {
 		}
 
 		try {
-			Computer computer = MapperComputerDTO.DTOToComputer(computerDTO);
+			Computer computer = MapperDTOComputer.DTOToComputer(computerDTO);
+			System.out.println(computer.toString());
 		} catch (DataException e) {
-			
+			log.error(e.getMessage());
 		}
 
 		doGet(request, response);

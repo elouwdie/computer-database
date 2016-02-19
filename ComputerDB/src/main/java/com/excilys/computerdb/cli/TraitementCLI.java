@@ -6,13 +6,13 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdb.exceptions.DataException;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.pages.Page;
 import com.excilys.computerdb.service.CompanyService;
 import com.excilys.computerdb.service.ComputerService;
 import com.excilys.computerdb.validation.DataVerification;
+import com.excilys.computerdb.validation.exceptions.DataException;
 
 public class TraitementCLI {
 

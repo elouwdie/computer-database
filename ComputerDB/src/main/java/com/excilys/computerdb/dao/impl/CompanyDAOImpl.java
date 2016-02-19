@@ -9,33 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdb.dao.CompanyDAO;
-import com.excilys.computerdb.exceptions.DAOException;
+import com.excilys.computerdb.dao.exceptions.DAOException;
 import com.excilys.computerdb.jdbc.ConnectionMySQL;
-import com.excilys.computerdb.mapper.MapperCompany;
+import com.excilys.computerdb.jdbc.exceptions.DAOConfigurationException;
+import com.excilys.computerdb.mapper.MapperDAOCompany;
+import com.excilys.computerdb.mapper.exceptions.MapperException;
 import com.excilys.computerdb.model.Company;
 
 public class CompanyDAOImpl implements CompanyDAO {
 
+	public static final String FIND_ALL = "SELECT * FROM company";
+	public static final String WHERE_ID = " WHERE id = ?";
+
 	@Override
 	public List<Company> findAll() {
-		// TODO modifier
 		Company company = new Company();
+		ResultSet resultSet = null;
 		List<Company> companies = new ArrayList<>();
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				Statement statement = connect.createStatement();) {
-			ResultSet resultSet = statement.executeQuery("SELECT id, name  FROM company");
 
+			resultSet = statement.executeQuery(FIND_ALL);
 			if (resultSet != null) {
 				while (resultSet.next()) {
-					company = MapperCompany.companyMap(resultSet);
+					company = MapperDAOCompany.companyMap(resultSet);
 					companies.add(company);
 				}
 			}
-			resultSet.close();
-
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return companies;
 	}
@@ -43,19 +52,25 @@ public class CompanyDAOImpl implements CompanyDAO {
 	@Override
 	public Company findById(long id) {
 		Company company = null;
+		ResultSet resultSet = null;
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
-				PreparedStatement statement = connect.prepareStatement("SELECT * FROM company WHERE id = ?");) {
+				PreparedStatement statement = connect.prepareStatement(FIND_ALL + WHERE_ID);) {
+
 			statement.setLong(1, id);
-			ResultSet resultSet = statement.executeQuery();
-
+			resultSet = statement.executeQuery();
 			if (resultSet != null && resultSet.next()) {
-				company = MapperCompany.companyMap(resultSet);
+				company = MapperDAOCompany.companyMap(resultSet);
 			}
-			resultSet.close();
 
-		} catch (SQLException e) {
+		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
+			}
 		}
 		return company;
 	}

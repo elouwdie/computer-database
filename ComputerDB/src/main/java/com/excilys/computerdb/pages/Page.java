@@ -3,6 +3,7 @@ package com.excilys.computerdb.pages;
 import java.util.List;
 
 import com.excilys.computerdb.model.Computer;
+import com.excilys.computerdb.service.PageService;
 
 public class Page {
 
@@ -13,17 +14,16 @@ public class Page {
 	private int nbComputers;
 	private List<Computer> computers;
 
-	public Page(int start, int limit) {
-		this.start = start;
+	public Page(int number, int limit) {
 		this.limit = limit;
-	}// TODO a supprimer
+		this.number = number;
+	}
 
 	public Page(int number, int nbComputers, int limit) {
 		this.limit = limit;
 		this.number = number;
 		this.nbComputers = nbComputers;
-		calculateTotalNbPages();
-		calculateStart();
+		PageService.updatePage(this, nbComputers);
 	}
 
 	public int getStart() {
@@ -40,8 +40,7 @@ public class Page {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
-		calculateTotalNbPages();
-		calculateStart();
+		PageService.updatePage(this, nbComputers);
 	}
 
 	public int getNumber() {
@@ -50,7 +49,7 @@ public class Page {
 
 	public void setNumber(int number) {
 		this.number = number;
-		calculateStart();
+		PageService.calculateStart(this);
 	}
 
 	public int getTotalNbPages() {
@@ -63,7 +62,7 @@ public class Page {
 
 	public void setNbComputers(int nbComputers) {
 		this.nbComputers = nbComputers;
-		calculateTotalNbPages();
+		PageService.calculateTotalNbPages(this, nbComputers);
 	}
 
 	public void setTotalNbPages(int totalNbPages) {
@@ -76,14 +75,5 @@ public class Page {
 
 	public void setComputers(List<Computer> computers) {
 		this.computers = computers;
-	}
-
-	public void calculateTotalNbPages() {
-		int nbPages = nbComputers / limit;
-		totalNbPages = nbComputers % limit > 0 ? nbPages + 1 : nbPages;
-	}
-
-	public void calculateStart() {
-		this.start = limit * (number - 1);
 	}
 }
