@@ -40,13 +40,39 @@ public class MapperDTOComputer {
 		try {
 			DataVerification.areDatesOk(intro, discont);
 			computer = new Computer();
+			computer.setId(computerDTO.getId());
 			computer.setName(computerDTO.getName());
 			computer.setIntroduced(intro);
 			computer.setDiscontinued(discont);
-			computer.setCompany(CompanyService.findById(computerDTO.getCompany()));
+			computer.setCompany(CompanyService.findById(computerDTO.getCompanyId()));
 		} catch (DataException e) {
 			throw new MapperException("Computer object wasn't created. Cause : \n\t" + e.getMessage());
 		}
 		return computer;
+	}
+	
+	public static ComputerDTO computerToDTO(Computer computer) throws MapperException {
+		ComputerDTO computerDTO = new ComputerDTO();
+		String introduced = null;
+		String discontinued = null;
+		long companyId = 0;
+		
+		if(computer.getIntroduced() != null) {
+			introduced = computer.getIntroduced().toString();
+		}
+		if(computer.getDiscontinued() != null) {
+			discontinued = computer.getDiscontinued().toString();
+		}
+		if(computer.getCompany() != null) {
+			companyId = computer.getCompany().getId();
+		}
+		
+		computerDTO.setId(computer.getId());
+		computerDTO.setName(computer.getName());
+		computerDTO.setIntroduced(introduced);
+		computerDTO.setDiscontinued(discontinued);
+		computerDTO.setCompanyId(companyId);
+		
+		return computerDTO;
 	}
 }

@@ -37,5 +37,21 @@
 		<url-pattern>/addcomputer</url-pattern>
 
 	</servlet-mapping>
+	
+	<servlet>
+
+		<servlet-name>EditComputer</servlet-name>
+
+		<servlet-class>com.excilys.computerdb.controllers.EditComputer</servlet-class>
+
+	</servlet>
+
+	<servlet-mapping>
+
+		<servlet-name>EditComputer</servlet-name>
+
+		<url-pattern>/editcomputer</url-pattern>
+
+	</servlet-mapping>
 
 </web-app>

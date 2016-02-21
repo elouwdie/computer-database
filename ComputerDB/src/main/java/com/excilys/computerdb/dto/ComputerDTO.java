@@ -2,7 +2,8 @@ package com.excilys.computerdb.dto;
 
 public class ComputerDTO {
 
-	private int companyId = 0;
+	private long id = 0;
+	private long companyId = 0;
 	private String name = null;
 	private String introduced = null;
 	private String discontinued = null;
@@ -10,13 +11,21 @@ public class ComputerDTO {
 	public ComputerDTO() {
 
 	}
+	
+	public long getId() {
+		return id;
+	}
 
-	public int getCompany() {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getCompanyId() {
 		return companyId;
 	}
 
-	public void setCompany(int companyId) {
-		this.companyId = companyId;
+	public void setCompanyId(long l) {
+		this.companyId = l;
 	}
 
 	public String getName() {

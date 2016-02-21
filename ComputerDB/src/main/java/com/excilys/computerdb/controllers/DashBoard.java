@@ -45,6 +45,10 @@ public class DashBoard extends HttpServlet {
 			}
 			if (request.getParameter("search") != null) {
 				name = request.getParameter("search");
+				if(request.getParameter("searchCompany") != null) {
+					System.out.println("gfdgfdhdf");
+				}
+				name = request.getParameter("search");
 				page.setNbComputers(ComputerService.getCountByName(name));
 				ComputerService.findByName(name, page);
 				request.setAttribute("search", request.getParameter("search"));

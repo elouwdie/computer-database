@@ -24,16 +24,18 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${size}Computers found</h1>
+			<h1 id="homeTitle">${size}Computersfound</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" method="GET" class="form-inline">
 						<input type="hidden" name="page" value="${currentPage}" /> <input
 							type="hidden" name="records" value="${records}" /> <input
 							type="search" id="searchbox" name="search" value="${search}"
-							class="form-control" placeholder="Search name" /> <input
+							class="form-control" placeholder="Search" /> <input
 							type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" />
+							class="btn btn-primary" /><input type="submit"
+							id="searchCompanysubmit" name="searchCompany"
+							value="Filter by company" class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
@@ -44,8 +46,8 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection" value="">
+		<form id="deleteForm" action="computerdb" method="POST">
+			<input type="hidden" name="selection" value="${computer.id}">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -75,8 +77,8 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
-							<td><a href="views/editComputer.html" onclick="">
-									${computer.name} </a></td>
+							<td><a href="editcomputer?computerid=${computer.id}"
+								onclick=""> ${computer.name} </a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
 							<td>${computer.getCompany().getName()}</td>

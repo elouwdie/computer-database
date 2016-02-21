@@ -17,25 +17,31 @@ import com.excilys.computerdb.mapper.MapperDTOComputer;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.service.CompanyService;
+import com.excilys.computerdb.service.ComputerService;
 import com.excilys.computerdb.validation.exceptions.DataException;
 
-public class AddComputerMenu extends HttpServlet {
+public class EditComputer extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	static Logger log;
+	private ComputerDTO computerDTO;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		List<Company> companies = CompanyService.findAll();
+		Computer computer = ComputerService.findById(Long.valueOf(request.getParameter("computerid")));
+		computerDTO = MapperDTOComputer.computerToDTO(computer);
 
 		request.setAttribute("companies", companies);
+		request.setAttribute("computer", computerDTO);
 
-		this.getServletContext().getRequestDispatcher("/WEB-INF/addcomputermenu.jsp").forward(request, response);
+		this.getServletContext().getRequestDispatcher("/WEB-INF/editcomputer.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		ComputerDTO computerDTO = new ComputerDTO();
 		log = LoggerFactory.getLogger(TraitementCLI.class);
 
@@ -68,7 +74,6 @@ public class AddComputerMenu extends HttpServlet {
 			log.error(e.getMessage());
 		}
 
-		doGet(request, response);
+		response.sendRedirect("computerdb");
 	}
-
 }
