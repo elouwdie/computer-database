@@ -3,11 +3,12 @@ package com.excilys.computerdb.jdbc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import com.excilys.computerdb.jdbc.exceptions.DAOConfigurationException;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPConfig;
 
 /**
  * Connection to the database
@@ -23,6 +24,8 @@ public class ConnectionMySQL {
 	private static final String PASSWORD = "motdepasse";
 	private static final String DRIVER = "driver";
 
+	private BoneCP connectionPool = null;
+
 	private String url;
 	private String user;
 	private String password;
@@ -37,6 +40,7 @@ public class ConnectionMySQL {
 		String user = null;
 		String passwd = null;
 		String driver = null;
+		BoneCP connectionPool = null;
 
 		// Loading the .properties file containing user's ID and password
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -65,14 +69,27 @@ public class ConnectionMySQL {
 		} catch (ClassNotFoundException e) {
 			throw new DAOConfigurationException("Le driver est introuvable dans le classpath.", e);
 		}
-		connectionMySQL = new ConnectionMySQL(url, user, passwd, driver);
+
+		try {
+			BoneCPConfig config = new BoneCPConfig();
+
+			config.setJdbcUrl(url);
+			config.setUsername(user);
+			config.setPassword(passwd);
+			config.setMinConnectionsPerPartition(5);
+			config.setMaxConnectionsPerPartition(10);
+			config.setPartitionCount(2);
+
+			connectionPool = new BoneCP(config);
+
+		} catch (SQLException e) {
+			throw new DAOConfigurationException("Erreur de configuration du pool de connexions.", e);
+		}
+		connectionMySQL = new ConnectionMySQL(connectionPool);
 	}
 
-	private ConnectionMySQL(String url, String user, String password, String driver) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
-		this.driver = driver;
+	private ConnectionMySQL(BoneCP connectionPool) {
+		this.connectionPool = connectionPool;
 	}
 
 	public static ConnectionMySQL getInstance() {
@@ -81,7 +98,7 @@ public class ConnectionMySQL {
 
 	public Connection getConnection() throws DAOConfigurationException {
 		try {
-			return DriverManager.getConnection(url, user, password);
+			return connectionPool.getConnection();
 		} catch (SQLException e) {
 			throw new DAOConfigurationException(e);
 		}

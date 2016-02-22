@@ -2,6 +2,7 @@ package com.excilys.computerdb.service;
 
 import com.excilys.computerdb.dao.exceptions.DAOException;
 import com.excilys.computerdb.dao.impl.ComputerDAOImpl;
+import com.excilys.computerdb.enumerations.EnumSearch;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.pages.Page;
 
@@ -13,15 +14,15 @@ public class ComputerService {
 		return computerDAO.getCount();
 	}
 
-	public static int getCountByName(String name) throws DAOException {
+	public static int getCountByName(EnumSearch search, String name) throws DAOException {
 		computerDAO = new ComputerDAOImpl();
-		return computerDAO.getCountByName(name);
+		System.out.println(computerDAO.getCountBy(search, name));
+		return computerDAO.getCountBy(search, name);
 	}
 
-	public static void findByName(String name, Page page) throws DAOException {
+	public static void findByName(EnumSearch search, String name, Page page) throws DAOException {
 		computerDAO = new ComputerDAOImpl();
-		page.setComputers(computerDAO.findByName(name, page));
-		;
+		page.setComputers(computerDAO.findByName(search, name, page));
 	}
 
 	public static void findAll(Page page) throws DAOException {

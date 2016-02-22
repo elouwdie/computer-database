@@ -18,4 +18,9 @@ public class CompanyService {
 		companyDAO = new CompanyDAOImpl();
 		return companyDAO.findById(id);
 	}
+
+	public static void delete(long id) {
+		companyDAO = new CompanyDAOImpl();
+		companyDAO.delete(id);
+	}
 }

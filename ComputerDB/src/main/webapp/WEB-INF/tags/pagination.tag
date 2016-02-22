@@ -39,14 +39,14 @@
 		</c:when>
 		<c:otherwise>
 			<li><a
-				href=<tags:link target="computerdb" page="${i}" limit="${records}" search="${search }"/>>${i}</a></li>
+				href=<tags:link target="computerdb" page="${i}" limit="${records}" search="${search }" searchCompany="${searchCompany }" />>${i}</a></li>
 		</c:otherwise>
 	</c:choose>
 </c:forEach>
 
 <c:if test="${currentPage lt noOfPages}">
 	<li><a
-		href=<tags:link target="computerdb" page="${currentPage + 1}" limit="${records}" search="${search }"/>
+		href=<tags:link target="computerdb" page="${currentPage + 1}" limit="${records}" search="${search }" searchCompany="${searchCompany }" />
 		aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 	</a></li>
 </c:if>

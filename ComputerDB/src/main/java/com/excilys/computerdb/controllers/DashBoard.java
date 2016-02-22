@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdb.cli.TraitementCLI;
 import com.excilys.computerdb.dao.exceptions.DAOException;
+import com.excilys.computerdb.enumerations.EnumSearch;
 import com.excilys.computerdb.pages.Page;
 import com.excilys.computerdb.service.ComputerService;
 
@@ -45,12 +46,13 @@ public class DashBoard extends HttpServlet {
 			}
 			if (request.getParameter("search") != null) {
 				name = request.getParameter("search");
-				if(request.getParameter("searchCompany") != null) {
-					System.out.println("gfdgfdhdf");
+				if (request.getParameter("searchCompany") != null) {
+					page.setNbComputers(ComputerService.getCountByName(EnumSearch.COMPANY, name));
+					ComputerService.findByName(EnumSearch.COMPANY, name, page);
+				} else {
+					page.setNbComputers(ComputerService.getCountByName(EnumSearch.NAME, name));
+					ComputerService.findByName(EnumSearch.NAME, name, page);
 				}
-				name = request.getParameter("search");
-				page.setNbComputers(ComputerService.getCountByName(name));
-				ComputerService.findByName(name, page);
 				request.setAttribute("search", request.getParameter("search"));
 			} else {
 				ComputerService.findAll(page);
@@ -66,5 +68,16 @@ public class DashBoard extends HttpServlet {
 		}
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/mainmenu.jsp").forward(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String id = request.getParameter("selection");
+		String[] tab = id.split(",");
+		for(String i : tab) {
+			System.out.println("Deleting computer" + i);
+		}
+		
+		doGet(request, response);
 	}
 }

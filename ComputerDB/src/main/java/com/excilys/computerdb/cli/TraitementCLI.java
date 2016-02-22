@@ -30,7 +30,7 @@ public class TraitementCLI {
 			System.out.println("**********************************" + "\nWhat do you want to do ?"
 					+ "\n1 : search computer" + "\n2 : search company" + "\n3 : add new computer"
 					+ "\n4 : update a computer" + "\n5 : delete a computer" + "\na : see all computers" + "\nq : quit"
-					+ "\n**********************************");
+					+ "\n6 : delete a company" + "\n**********************************");
 
 			switch (repUtilisateur.next().trim()) {
 			case "1":
@@ -47,6 +47,9 @@ public class TraitementCLI {
 				break;
 			case "5":
 				deleteComputer();
+				break;
+			case "6":
+				deleteCompany();
 				break;
 			case "a":
 				findAllComputers();
@@ -272,6 +275,32 @@ public class TraitementCLI {
 					if (computer.getName() != null) {
 						// Deletes the computer in the database
 						ComputerService.delete(computer.getId());
+						ok = true;
+						log.info("\nSuppression done.");
+					} else
+						log.error("This ID is not valid.");
+				}
+			}
+		} while (!repUtilisateur.nextLine().trim().equals("r") && ok == false);
+	}
+
+	/**
+	 * Verifies if the computer entered exists, and if it does, delete it. The
+	 * user enters the computer's ID.
+	 */
+	private static void deleteCompany() {
+		boolean ok = false;
+
+		do {
+			System.out.println("\nEnter the id of the company to delete: " + "\nr : return back");
+			if (repUtilisateur.hasNextLong()) {
+				{
+					Company company = null;
+					company = CompanyService.findById(repUtilisateur.nextLong());
+					// Verify if the computer exists
+					if (company.getName() != null) {
+						// Deletes the computer in the database
+						CompanyService.delete(company.getId());
 						ok = true;
 						log.info("\nSuppression done.");
 					} else

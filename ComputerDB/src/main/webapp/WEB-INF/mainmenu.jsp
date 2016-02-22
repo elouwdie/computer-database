@@ -47,7 +47,7 @@
 		</div>
 
 		<form id="deleteForm" action="computerdb" method="POST">
-			<input type="hidden" name="selection" value="${computer.id}">
+			<input type="hidden" name="selection" value=""> 
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -59,9 +59,9 @@
 
 						<th class="editMode" style="width: 60px; height: 22px;"><input
 							type="checkbox" id="selectall" /> <span
-							style="vertical-align: top;"> - <a href="#"
-								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-									class="fa fa-trash-o fa-lg"></i>
+							style="vertical-align: top;"> - <a
+								href="javascript:$.fn.deleteSelected();" id="deleteSelected">
+									<i class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
 						<th>Computer name</th>
@@ -76,7 +76,7 @@
 					<c:forEach var="computer" items="${employeeList}">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
-								class="cb" value="0"></td>
+								class="cb" value="${computer.id}"></td>
 							<td><a href="editcomputer?computerid=${computer.id}"
 								onclick=""> ${computer.name} </a></td>
 							<td>${computer.introduced}</td>
@@ -95,7 +95,7 @@
 			<c:forEach var="record" items="10,50,100">
 				<a type="button" class="btn btn-default"
 					href=<tags:link target="computerdb" page="${currentPage}" limit="${record}"
-				search="${search }" />>${record}</a>
+				search="${search }" searchCompany="${searchCompany }" />>${record}</a>
 			</c:forEach>
 		</div>
 

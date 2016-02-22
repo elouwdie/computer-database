@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excilys.computerdb.enumerations.EnumSearch;
 import com.excilys.computerdb.dao.ComputerDAO;
 import com.excilys.computerdb.dao.exceptions.DAOException;
 import com.excilys.computerdb.jdbc.ConnectionMySQL;
@@ -28,6 +29,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 	public static final String SELECT_COUNT = "SELECT COUNT(*) FROM computer";
 	public static final String WHERE_NAME = " WHERE computer.name like ?";
+	public static final String WHERE_COMPANY = " WHERE company.name like ?";
 	public static final String WHERE_ID = " WHERE computer.id = ?";
 	public static final String SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id";
 	public static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -40,7 +42,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 	@Override
 	public int getCount() {
 		ResultSet resultSet = null;
-		
+
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				Statement statement = connect.createStatement();) {
 
@@ -48,12 +50,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 			resultSet.next();
 			nbComputers = resultSet.getInt(1);
-			resultSet.close();
 
 		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
@@ -64,23 +64,28 @@ public class ComputerDAOImpl implements ComputerDAO {
 	}
 
 	@Override
-	public int getCountByName(String name) {
+	public int getCountBy(EnumSearch search, String name) {
 		ResultSet resultSet = null;
+		String where = null;
+
+		if (search.equals(EnumSearch.NAME)) {
+			where = WHERE_NAME;
+		} else {
+			where = WHERE_COMPANY;
+		}
 		
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
-				PreparedStatement statement = connect.prepareStatement(SELECT_COUNT + WHERE_NAME);) {
-			
+				PreparedStatement statement = connect.prepareStatement(SELECT + where);) {
+
 			statement.setString(1, "%" + name + "%");
 			resultSet = statement.executeQuery();
 
 			resultSet.next();
 			nbComputers = resultSet.getInt(1);
-			resultSet.close();
 
 		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
@@ -109,12 +114,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 					computers.add(computer);
 				}
 			}
-			resultSet.close();
 
 		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
@@ -131,18 +134,16 @@ public class ComputerDAOImpl implements ComputerDAO {
 
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT + WHERE_ID);) {
-			
+
 			statement.setLong(1, id);
 			resultSet = statement.executeQuery();
 			if (resultSet != null && resultSet.next()) {
 				computer = MapperDAOComputer.computerMap(resultSet);
 			}
-			resultSet.close();
 
 		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
@@ -153,13 +154,20 @@ public class ComputerDAOImpl implements ComputerDAO {
 	}
 
 	@Override
-	public List<Computer> findByName(String name, Page page) {
+	public List<Computer> findByName(EnumSearch search, String name, Page page) {
 		List<Computer> computers = new ArrayList<>();
 		ResultSet resultSet = null;
+		String where = null;
 
+		if (search.equals(EnumSearch.NAME)) {
+			where = WHERE_NAME;
+		} else {
+			where = WHERE_COMPANY;
+		}
+		
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
-				PreparedStatement statement = connect.prepareStatement(SELECT + WHERE_NAME + OFFSET_LIMIT);) {
-			
+				PreparedStatement statement = connect.prepareStatement(SELECT + where + OFFSET_LIMIT);) {
+
 			statement.setString(1, "%" + name + "%");
 			statement.setInt(3, page.getStart());
 			statement.setInt(2, page.getLimit());
@@ -171,12 +179,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 					computers.add(computer);
 				}
 			}
-			resultSet.close();
 
 		} catch (SQLException | DAOConfigurationException | MapperException e) {
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
@@ -201,12 +207,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 			if (resultSet != null && resultSet.next()) {
 				computer.setId(resultSet.getLong(1));
 			}
-			resultSet.close();
 
 		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
@@ -219,11 +223,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 	public void update(Computer computer) {
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(UPDATE);) {
-			
+
 			set(computer, statement);
 			statement.setLong(5, computer.getId());
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
 		}
@@ -233,10 +236,9 @@ public class ComputerDAOImpl implements ComputerDAO {
 	public void delete(long id) {
 		try (Connection connect = ConnectionMySQL.getInstance().getConnection();
 				PreparedStatement statement = connect.prepareStatement(DELETE);) {
-			
+
 			statement.setLong(1, id);
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException | DAOConfigurationException e) {
 			throw new DAOException(e);
 		}

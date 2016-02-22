@@ -3,7 +3,6 @@ package com.excilys.computerdb.dao;
 import java.util.List;
 
 import com.excilys.computerdb.model.Company;
-import com.excilys.computerdb.model.Computer;
 
 /**
  * Data access object
@@ -21,13 +20,13 @@ public interface CompanyDAO {
 	List<Company> findAll();
 
 	/**
-	 * Finds all computers in the database with the corresponding company.
+	 * Deletes a company in the database, and all the computers related to this
+	 * company.
 	 * 
-	 * @param name
-	 *            : the company's name
-	 * @return : the list of corresponding computers.
+	 * @param id
+	 *            : the id of the company to delete.
 	 */
-	List<Computer> findAllComputers(String name);
+	void delete(long id);
 
 	/**
 	 * Find a company in the database.

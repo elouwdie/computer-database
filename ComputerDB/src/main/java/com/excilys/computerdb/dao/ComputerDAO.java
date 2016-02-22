@@ -3,6 +3,7 @@ package com.excilys.computerdb.dao;
 import java.util.List;
 
 import com.excilys.computerdb.dao.exceptions.DAOException;
+import com.excilys.computerdb.enumerations.EnumSearch;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.pages.Page;
 
@@ -25,27 +26,29 @@ public interface ComputerDAO {
 	/**
 	 * Counts the number of computers with a given name in the database
 	 * 
+	 * @param search
+	 *            : the field to look at
+	 * 
 	 * @param name
 	 *            the name computers must have
 	 * @return the list of computers with the given name
 	 * @throws DAOException
 	 */
-	int getCountByName(String name) throws DAOException;
+	int getCountBy(EnumSearch search, String name) throws DAOException;
 
 	/**
-	 * Finds a given number of computers with a given name in the database, from
-	 * offset
+	 * Fills the given page with computers corresponding to the search
 	 * 
+	 * @param search
+	 *            : the field of the computer to compare
 	 * @param name
-	 *            : the name computers must have
-	 * @param offset
-	 *            : the index to start searching
-	 * @param limit
-	 *            : the limit of computers to return
-	 * @return : the given numbers of computers, with the given name
+	 *            : the name the field must have
+	 * @param page
+	 *            : the page to fill with computers
+	 * @return the list of the computers found
 	 * @throws DAOException
 	 */
-	List<Computer> findByName(String name, Page page) throws DAOException;
+	List<Computer> findByName(EnumSearch search, String name, Page page) throws DAOException;
 
 	/**
 	 * Finds a given number of computers in the database, from offset
