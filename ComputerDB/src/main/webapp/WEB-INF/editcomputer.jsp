@@ -49,14 +49,13 @@
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
-									<c:forEach var="i" begin="1" end="${companies.size()}" step="1">
-
+									<c:forEach var="company" items="${companies}">
 										<c:choose>
-											<c:when test="${i == computer.companyId}">
-												<option value="${i}" selected="selected">${companies.get(i - 1).getName()}</option>
+											<c:when test="${company.id == computer.companyId}">
+												<option value="${company.id}" selected="selected">${company.getName()}</option>
 											</c:when>
 											<c:otherwise>
-												<option value="${i}">${companies.get(i - 1).getName()}</option>
+												<option value="${company.id}">${company.getName()}</option>
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>
