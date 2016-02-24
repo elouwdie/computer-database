@@ -26,6 +26,7 @@ public class EditComputer extends HttpServlet {
   static Logger log;
   private ComputerDto computerDto;
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
@@ -40,6 +41,7 @@ public class EditComputer extends HttpServlet {
         response);
   }
 
+  @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 

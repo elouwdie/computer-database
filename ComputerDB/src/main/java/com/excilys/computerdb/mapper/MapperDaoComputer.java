@@ -12,7 +12,6 @@ import java.time.LocalDate;
 
 /**
  * Converts a ResultSet to a Computer object.
- * 
  * @author ecayez
  *
  */
@@ -20,14 +19,10 @@ public class MapperDaoComputer {
 
   /**
    * Converts the given ResultSet to a Computer.
-   * 
-   * @param rs
-   *          : the ResultSet to convert.
+   * @param rs : the ResultSet to convert.
    * @return the corresponding Computer.
-   * @throws MapperException
-   *           : when the data are not valid.
-   * @throws SQLException
-   *           : when there is a problem with the resultSet.
+   * @throws MapperException : when the data are not valid.
+   * @throws SQLException : when there is a problem with the resultSet.
    */
   public static Computer computerMap(ResultSet rs) throws MapperException, SQLException {
     Computer computer = null;

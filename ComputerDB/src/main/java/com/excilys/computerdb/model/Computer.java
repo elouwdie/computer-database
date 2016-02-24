@@ -5,7 +5,6 @@ import java.time.LocalDate;
 /**
  * Class computer : corresponds to an instance of the table computer in the
  * database.
- * 
  * @author ecayez
  *
  */
@@ -16,21 +15,19 @@ public class Computer {
   private LocalDate introduced = null;
   private LocalDate discontinued = null;
 
+  /**
+   * Creates a new empty computer.
+   */
   public Computer() {
 
   }
 
   /**
    * Creates a new computer with the given arguments.
-   * 
-   * @param name
-   *          : the name of the computer.
-   * @param introduced
-   *          : the introduced date.
-   * @param discontinued
-   *          : the discontinued date.
-   * @param company
-   *          : the company which created the computer.
+   * @param name : the name of the computer.
+   * @param introduced : the introduced date.
+   * @param discontinued : the discontinued date.
+   * @param company : the company which created the computer.
    */
   public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
     this.name = name;

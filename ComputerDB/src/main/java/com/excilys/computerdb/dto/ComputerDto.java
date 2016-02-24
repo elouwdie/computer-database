@@ -8,6 +8,9 @@ public class ComputerDto {
   private String introduced = null;
   private String discontinued = null;
 
+  /**
+   * Creates a computerDTO.
+   */
   public ComputerDto() {
 
   }

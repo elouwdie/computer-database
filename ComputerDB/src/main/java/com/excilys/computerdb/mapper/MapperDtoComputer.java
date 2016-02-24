@@ -11,7 +11,6 @@ import java.time.LocalDate;
 
 /**
  * Converts a ResultSet to a ComputerDTO object.
- * 
  * @author ecayez
  *
  */
@@ -19,12 +18,9 @@ public class MapperDtoComputer {
 
   /**
    * Converts the given ComputerDto to a Computer.
-   * 
-   * @param computerDto
-   *          : the ComputerDto to convert.
+   * @param computerDto : the ComputerDto to convert.
    * @return the corresponding Computer.
-   * @throws MapperException
-   *           : when the data are not correct.
+   * @throws MapperException : when the data are not correct.
    */
   public static Computer dtoToComputer(ComputerDto computerDto) throws MapperException {
     Computer computer = null;
@@ -53,12 +49,9 @@ public class MapperDtoComputer {
 
   /**
    * Converts the given Computer to a ComputerDto.
-   * 
-   * @param computer
-   *          : the Computer to convert.
+   * @param computer : the Computer to convert.
    * @return the corresponding ComputerDto.
-   * @throws MapperException
-   *           : when the data are not correct.
+   * @throws MapperException : when the data are not correct.
    */
   public static ComputerDto computerToDto(Computer computer) throws MapperException {
     String introduced = null;

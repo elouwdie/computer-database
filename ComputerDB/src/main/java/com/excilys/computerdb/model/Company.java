@@ -2,7 +2,6 @@ package com.excilys.computerdb.model;
 
 /**
  * Class company : corresponds to an instance of table company in the database.
- * 
  * @author ecayez
  *
  */
@@ -10,6 +9,9 @@ public class Company {
   private long id = 0;
   private String name;
 
+  /**
+   * Creates a new empty company.
+   */
   public Company() {
 
   }

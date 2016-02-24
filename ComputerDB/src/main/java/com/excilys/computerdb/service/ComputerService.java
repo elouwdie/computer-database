@@ -15,10 +15,8 @@ public class ComputerService {
 
   /**
    * counts the number of computers in the database.
-   * 
    * @return : the count of computers in the database.
-   * @throws DaoException
-   *           : when there is a problem in the database.
+   * @throws DaoException : when there is a problem in the database.
    */
   public static int getCount() throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -38,15 +36,11 @@ public class ComputerService {
   /**
    * counts the number of computers with the given name / company name in the
    * database.
-   * 
-   * @param search
-   *          : the type of search : name or company name.
-   * @param name
-   *          : the name to search.
+   * @param search : the type of search : name or company name.
+   * @param name : the name to search.
    * @return : the count of computers with the given name / company name in the
    *         database.
-   * @throws DaoException
-   *           : when there is a problem in the database.
+   * @throws DaoException : when there is a problem in the database.
    */
   public static int getCountBy(EnumSearch search, String name) throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -65,15 +59,10 @@ public class ComputerService {
 
   /**
    * Finds all computers with the specified name / company name.
-   * 
-   * @param search
-   *          : the type of search.
-   * @param name
-   *          : the name to search.
-   * @param page
-   *          : the page to fill with the results.
-   * @throws DaoException
-   *           : problem in the database.
+   * @param search : the type of search.
+   * @param name : the name to search.
+   * @param page : the page to fill with the results.
+   * @throws DaoException : problem in the database.
    */
   public static void findByName(EnumSearch search, String name, Page page) throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -90,11 +79,8 @@ public class ComputerService {
 
   /**
    * Finds all computers in the database.
-   * 
-   * @param page
-   *          : the page to fill with the results.
-   * @throws DaoException
-   *           : problem in the database.
+   * @param page : the page to fill with the results.
+   * @throws DaoException : problem in the database.
    */
   public static void findAll(Page page) throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -111,12 +97,9 @@ public class ComputerService {
 
   /**
    * Find a computer in the database.
-   * 
-   * @param id
-   *          : the id of the computer to search.
+   * @param id : the id of the computer to search.
    * @return : the computer with the corresponding id.
-   * @throws DaoException
-   *           : problem in the database.
+   * @throws DaoException : problem in the database.
    */
   public static Computer findById(long id) throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -135,11 +118,8 @@ public class ComputerService {
 
   /**
    * Creates a computer in the database.
-   * 
-   * @param computer
-   *          : the computer to create.
-   * @throws DaoException
-   *           : problem in the database.
+   * @param computer : the computer to create.
+   * @throws DaoException : problem in the database.
    */
   public static void create(Computer computer) throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -156,11 +136,8 @@ public class ComputerService {
 
   /**
    * Updates a computer in the database with the given computer.
-   * 
-   * @param computer
-   *          : the computer to update.
-   * @throws DaoException
-   *           : problem in the database.
+   * @param computer : the computer to update.
+   * @throws DaoException : problem in the database.
    */
   public static void update(Computer computer) throws DaoException {
     computerDAO = new ComputerDaoImpl();
@@ -177,11 +154,8 @@ public class ComputerService {
 
   /**
    * Deletes a computer from the database.
-   * 
-   * @param id
-   *          : the id of the computer to delete.
-   * @throws DaoException
-   *           : problem in the database.
+   * @param id : the id of the computer to delete.
+   * @throws DaoException : problem in the database.
    */
   public static void delete(long id) throws DaoException {
     computerDAO = new ComputerDaoImpl();

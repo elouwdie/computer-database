@@ -12,9 +12,7 @@ import java.util.Properties;
 
 /**
  * Connection to the database.
- * 
  * @author ecayez
- * 
  */
 public class ConnectionMySql {
 
@@ -92,6 +90,10 @@ public class ConnectionMySql {
     connectionMySQL = new ConnectionMySql(connectionPool);
   }
 
+  /**
+   * Allocates the given connectionPool.
+   * @param connectionPool : the connectionPool to allocate.
+   */
   private ConnectionMySql(BoneCP connectionPool) {
     this.connectionPool = connectionPool;
   }
@@ -101,10 +103,9 @@ public class ConnectionMySql {
   }
 
   /**
-   * 
+   * Returns a connection to the database.
    * @return : the connection to the database.
-   * @throws DaoConfigurationException
-   *           : config not good
+   * @throws DaoConfigurationException : config not good.
    */
   public Connection getConnection() throws DaoConfigurationException {
     try {
