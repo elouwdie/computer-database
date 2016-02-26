@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 /**
  * Contains all possible verifications of the given data.
- * 
  * @author excilys
  *
  */
@@ -15,13 +14,9 @@ public class DataVerification {
 
   /**
    * Verifies if the given dates are valid.
-   * 
-   * @param intro
-   *          : the introduced date.
-   * @param discont
-   *          : the discontinued date.
-   * @throws DataException
-   *           : when the dates are not correct.
+   * @param intro : the introduced date.
+   * @param discont : the discontinued date.
+   * @throws DataException : when the dates are not correct.
    */
   public static void areDatesOk(LocalDate intro, LocalDate discont) throws DataException {
     if (intro != null && discont != null) {
@@ -34,13 +29,9 @@ public class DataVerification {
   /**
    * Verifies if the given date is a realistic date, and is after the Monday
    * 1st, 1970.
-   * 
-   * @param year
-   *          : the year of the date.
-   * @param month
-   *          : the month of the date.
-   * @param day
-   *          : the day of the date.
+   * @param year : the year of the date.
+   * @param month : the month of the date.
+   * @param day : the day of the date.
    * @return : true if the date is correct, false if it isn't
    */
   public static boolean isDateCorrect(int year, int month, int day) {
@@ -64,6 +55,11 @@ public class DataVerification {
     return false;
   }
 
+  /**
+   * Verifies if the company id is valid.
+   * @param companyId : the id of the company.
+   * @return : true if the company is is valid, false if not.
+   */
   public static boolean isCompanyOk(long companyId) {
     return (CompanyService.findById(companyId) != null);
   }

@@ -12,13 +12,9 @@ public class DaoService {
 
   /**
    * Sets the statement adapted to the given computer.
-   * 
-   * @param computer
-   *          : the computer to convert
-   * @param statement
-   *          : the statement to adapt.
-   * @throws DaoException
-   *           : when there is a SQLException.
+   * @param computer : the computer to convert
+   * @param statement : the statement to adapt.
+   * @throws DaoException : when there is a SQLException.
    */
   public static void set(Computer computer, PreparedStatement statement) throws DaoException {
 
@@ -46,9 +42,7 @@ public class DaoService {
 
   /**
    * Closes the given resultset.
-   * 
-   * @param rs
-   *          : the resultset to close.
+   * @param rs : the resultset to close.
    */
   public static void closeRs(ResultSet rs) {
     try {

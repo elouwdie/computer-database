@@ -8,7 +8,6 @@ import com.excilys.computerdb.transaction.exception.TransactionException;
 
 /**
  * Manages the users transactions.
- * 
  * @author ecayez
  *
  */
@@ -20,10 +19,8 @@ public class TransactionManager {
 
   /**
    * returns the current connection.
-   * 
    * @return : the current connection.
-   * @throws Exception
-   *           : if there is a connection problem.
+   * @throws Exception : if there is a connection problem.
    */
   public static Connection currentConnection() throws TransactionException {
     Connection conn = ThreadLocalConnection.get();
@@ -35,9 +32,7 @@ public class TransactionManager {
 
   /**
    * Closes the current session.
-   * 
-   * @throws Exception
-   *           : if there is a connection problem.
+   * @throws Exception : if there is a connection problem.
    */
   public static void closeSession() throws SQLException {
     Connection conn = currentConnection();
@@ -48,11 +43,9 @@ public class TransactionManager {
 
   /**
    * Opens a new session.
-   * 
-   * @param isBeginTransaction
-   *          : true if the transaction is already started, false if not.
-   * @throws Exception
-   *           : if there is a connection problem.
+   * @param isBeginTransaction : true if the transaction is already started,
+   *          false if not.
+   * @throws Exception : if there is a connection problem.
    */
   public static void openSession(boolean isBeginTransaction)
       throws TransactionException, SQLException {

@@ -24,6 +24,7 @@ public class AddComputerMenu extends HttpServlet {
   private static final long serialVersionUID = 1L;
   static Logger log;
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
@@ -35,6 +36,7 @@ public class AddComputerMenu extends HttpServlet {
         response);
   }
 
+  @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     ComputerDto computerDto = new ComputerDto();

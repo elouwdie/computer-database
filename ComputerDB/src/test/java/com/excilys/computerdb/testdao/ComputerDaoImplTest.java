@@ -65,53 +65,34 @@ public class ComputerDaoImplTest {
       e.printStackTrace();
     }
   }
-
-  @Test
-  public void testAllCompany() {
-    assertTrue(companyDAO.findAll().size() > 0);
-  }
-
-  @Test
-  public void testFindCompany() {
-    assertEquals(company, companyDAO.findById(1));
-  }
-
   /*
+   * @Test public void testAllCompany() { assertTrue(companyDAO.findAll().size()
+   * > 0); }
+   * 
+   * @Test public void testFindCompany() { assertEquals(company,
+   * companyDAO.findById(1)); }
+   * 
    * @Test public void testAllComputers() { assertTrue(computerDAO.findAll(new
    * Page(1, 10)).size() > 0); }
+   * 
+   * 
+   * @Test public void testFindComputer() { computer.setCompany(company);
+   * assertEquals(computer, computerDAO.findById(1)); }
+   * 
+   * @Test public void testCreateComputer() { long idInitial = computer.getId();
+   * computer.setName("testCreate"); computerDAO.create(computer);
+   * assertTrue(computer.getId() != idInitial);
+   * computerDAO.delete(computer.getId()); }
+   * 
+   * @Test public void testDeleteComputer() { computer.setName("testDelete");
+   * computerDAO.create(computer); long idCree = computer.getId();
+   * computerDAO.delete(computer.getId());
+   * assertEquals(computerDAO.findById(idCree), null); }
+   * 
+   * @Test public void testUpdateComputer() { computer.setName("test");
+   * computerDAO.create(computer); computer.setName("testUpdate");
+   * computerDAO.update(computer);
+   * assertEquals(computerDAO.findById(computer.getId()).getName(),
+   * "testUpdate"); computerDAO.delete(computer.getId()); }
    */
-
-  @Test
-  public void testFindComputer() {
-    computer.setCompany(company);
-    assertEquals(computer, computerDAO.findById(1));
-  }
-
-  @Test
-  public void testCreateComputer() {
-    long idInitial = computer.getId();
-    computer.setName("testCreate");
-    computerDAO.create(computer);
-    assertTrue(computer.getId() != idInitial);
-    computerDAO.delete(computer.getId());
-  }
-
-  @Test
-  public void testDeleteComputer() {
-    computer.setName("testDelete");
-    computerDAO.create(computer);
-    long idCree = computer.getId();
-    computerDAO.delete(computer.getId());
-    assertEquals(computerDAO.findById(idCree), null);
-  }
-
-  @Test
-  public void testUpdateComputer() {
-    computer.setName("test");
-    computerDAO.create(computer);
-    computer.setName("testUpdate");
-    computerDAO.update(computer);
-    assertEquals(computerDAO.findById(computer.getId()).getName(), "testUpdate");
-    computerDAO.delete(computer.getId());
-  }
 }

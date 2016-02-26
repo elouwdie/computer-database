@@ -14,6 +14,11 @@ public class Page {
   private int nbComputers;
   private List<Computer> computers;
 
+  /**
+   * Creates a page with the given arguments.
+   * @param number : the number of the page.
+   * @param limit : the limit of computers in the page.
+   */
   public Page(int number, int limit) {
     this.limit = limit;
     this.number = number;
@@ -21,13 +26,9 @@ public class Page {
 
   /**
    * Creates a page with the given arguments.
-   * 
-   * @param number
-   *          : the number of the page.
-   * @param nbComputers
-   *          : the total number of computers.
-   * @param limit
-   *          : the limit of computers in the page.
+   * @param number : the number of the page.
+   * @param nbComputers : the total number of computers.
+   * @param limit : the limit of computers in the page.
    */
   public Page(int number, int nbComputers, int limit) {
     this.limit = limit;
@@ -48,6 +49,10 @@ public class Page {
     return limit;
   }
 
+  /**
+   * Sets the limit and update the page.
+   * @param limit : the new limit.
+   */
   public void setLimit(int limit) {
     this.limit = limit;
     PageService.updatePage(this, nbComputers);
@@ -57,6 +62,10 @@ public class Page {
     return number;
   }
 
+  /**
+   * Sets the number and update the page.
+   * @param number : the new number of the page.
+   */
   public void setNumber(int number) {
     this.number = number;
     PageService.calculateStart(this);
@@ -70,6 +79,10 @@ public class Page {
     return nbComputers;
   }
 
+  /**
+   * Sets the number of computers and updates the page.
+   * @param nbComputers : the new number of computers in the page.
+   */
   public void setNbComputers(int nbComputers) {
     this.nbComputers = nbComputers;
     PageService.calculateTotalNbPages(this, nbComputers);

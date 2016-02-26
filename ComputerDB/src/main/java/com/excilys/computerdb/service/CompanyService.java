@@ -14,10 +14,8 @@ public class CompanyService {
 
   /**
    * Finds the list of companies in the database.
-   * 
    * @return the list of companies.
-   * @throws DaoException
-   *           : problem in the database.
+   * @throws DaoException : problem in the database.
    */
   public static List<Company> findAll() throws DaoException {
     companyDAO = new CompanyDaoImpl();
@@ -36,12 +34,9 @@ public class CompanyService {
 
   /**
    * Finds a company in the database.
-   * 
-   * @param id
-   *          : the id of the company to find.
+   * @param id : the id of the company to find.
    * @return : the corresponding company.
-   * @throws DaoException
-   *           : problem in the database.
+   * @throws DaoException : problem in the database.
    */
   public static Company findById(long id) throws DaoException {
     companyDAO = new CompanyDaoImpl();
@@ -61,9 +56,7 @@ public class CompanyService {
   /**
    * Deletes a company in the database, and every computer related to this
    * company.
-   * 
-   * @param id
-   *          : the id of the company to delete.
+   * @param id : the id of the company to delete.
    */
   public static void delete(long id) {
     companyDAO = new CompanyDaoImpl();
