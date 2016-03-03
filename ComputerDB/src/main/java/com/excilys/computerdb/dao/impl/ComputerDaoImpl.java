@@ -1,23 +1,17 @@
 package com.excilys.computerdb.dao.impl;
 
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import com.excilys.computerdb.dao.ComputerDao;
-import com.excilys.computerdb.dao.exception.DaoException;
 import com.excilys.computerdb.enumeration.EnumSearch;
-import com.excilys.computerdb.jdbc.exception.DaoConfigurationException;
 import com.excilys.computerdb.mapper.MapperDaoComputer;
-import com.excilys.computerdb.mapper.exception.MapperException;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.page.Page;
 import com.excilys.computerdb.service.DaoService;
-import com.excilys.computerdb.transaction.TransactionManager;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ComputerDaoImpl implements ComputerDao {
 
@@ -34,31 +28,24 @@ public class ComputerDaoImpl implements ComputerDao {
       "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
   public static final String OFFSET_LIMIT = " LIMIT ? OFFSET ?";
 
-  int nbComputers;
+  private int nbComputers;
+
+  private DataSource dataSource;
+
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
 
   @Override
   public int getCount() {
-    ResultSet resultSet = null;
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    nbComputers = jdbcTemplate.queryForObject(SELECT_COUNT, Integer.class);
 
-    try (Connection connect = TransactionManager.currentConnection();
-        Statement statement = connect.createStatement();) {
-
-      resultSet = statement.executeQuery(SELECT_COUNT);
-
-      resultSet.next();
-      nbComputers = resultSet.getInt(1);
-
-    } catch (SQLException | DaoConfigurationException e) {
-      throw new DaoException(e);
-    } finally {
-      DaoService.closeRs(resultSet);
-    }
     return nbComputers;
   }
 
   @Override
   public int getCountBy(EnumSearch search, String name) {
-    ResultSet resultSet = null;
     String where = null;
 
     if (search.equals(EnumSearch.NAME)) {
@@ -67,77 +54,37 @@ public class ComputerDaoImpl implements ComputerDao {
       where = WHERE_COMPANY;
     }
 
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement = connect.prepareStatement(SELECT + where);) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    nbComputers =
+        jdbcTemplate.queryForObject(SELECT_COUNT + where, Integer.class, "%" + name + "%");
 
-      statement.setString(1, "%" + name + "%");
-      resultSet = statement.executeQuery();
-
-      resultSet.next();
-      nbComputers = resultSet.getInt(1);
-
-    } catch (SQLException | DaoConfigurationException e) {
-      throw new DaoException(e);
-    } finally {
-      DaoService.closeRs(resultSet);
-    }
     return nbComputers;
   }
 
   @Override
   public List<Computer> findAll(Page page) {
-    ResultSet resultSet = null;
-    List<Computer> computers = new ArrayList<>();
 
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement = connect.prepareStatement(SELECT + OFFSET_LIMIT);) {
-      // SQL query
-      statement.setInt(2, page.getStart());
-      statement.setInt(1, page.getLimit());
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    List<Computer> computers =
+        jdbcTemplate.query(SELECT + OFFSET_LIMIT, new MapperDaoComputer(), page.getLimit(),
+            page.getStart());
 
-      resultSet = statement.executeQuery();
-      // Creation of the list
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Computer computer = MapperDaoComputer.computerMap(resultSet);
-          computers.add(computer);
-        }
-      }
-
-    } catch (SQLException | DaoConfigurationException | MapperException e) {
-      throw new DaoException(e);
-    } finally {
-      DaoService.closeRs(resultSet);
-    }
     return computers;
   }
 
   @Override
   public Computer findById(long id) {
-    ResultSet resultSet = null;
-    Computer computer = null;
 
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement = connect.prepareStatement(SELECT + WHERE_ID);) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    Computer computer = (Computer) jdbcTemplate.queryForObject(
+        SELECT + WHERE_ID, new MapperDaoComputer(), id);
 
-      statement.setLong(1, id);
-      resultSet = statement.executeQuery();
-      if (resultSet != null && resultSet.next()) {
-        computer = MapperDaoComputer.computerMap(resultSet);
-      }
-
-    } catch (SQLException | DaoConfigurationException | MapperException e) {
-      throw new DaoException(e);
-    } finally {
-      DaoService.closeRs(resultSet);
-    }
     return computer;
   }
 
   @Override
   public List<Computer> findByName(EnumSearch search, String name, Page page) {
-    List<Computer> computers = new ArrayList<>();
-    ResultSet resultSet = null;
+
     String where = null;
 
     if (search.equals(EnumSearch.NAME)) {
@@ -146,75 +93,38 @@ public class ComputerDaoImpl implements ComputerDao {
       where = WHERE_COMPANY;
     }
 
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement = connect.prepareStatement(SELECT + where + OFFSET_LIMIT);) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    List<Computer> computers =
+        jdbcTemplate.query(SELECT + where + OFFSET_LIMIT, new MapperDaoComputer(), "%" + name + "%",
+            page.getLimit(), page.getStart());
 
-      statement.setString(1, "%" + name + "%");
-      statement.setInt(3, page.getStart());
-      statement.setInt(2, page.getLimit());
-      resultSet = statement.executeQuery();
-      // Creation of the list
-      if (resultSet != null) {
-        while (resultSet.next()) {
-          Computer computer = MapperDaoComputer.computerMap(resultSet);
-          computers.add(computer);
-        }
-      }
-
-    } catch (SQLException | DaoConfigurationException | MapperException e) {
-      throw new DaoException(e);
-    } finally {
-      DaoService.closeRs(resultSet);
-    }
     return computers;
   }
 
   @Override
   public void create(Computer computer) {
-    ResultSet resultSet = null;
 
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement =
-            connect.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-      DaoService.set(computer, statement);
+    Object[] obj = DaoService.set(computer);
+    jdbcTemplate.update(INSERT, obj);
 
-      statement.executeUpdate();
-
-      resultSet = statement.getGeneratedKeys();
-      if (resultSet != null && resultSet.next()) {
-        computer.setId(resultSet.getLong(1));
-      }
-
-    } catch (SQLException | DaoConfigurationException e) {
-      throw new DaoException(e);
-    } finally {
-      DaoService.closeRs(resultSet);
-    }
   }
 
   @Override
   public void update(Computer computer) {
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement = connect.prepareStatement(UPDATE);) {
 
-      DaoService.set(computer, statement);
-      statement.setLong(5, computer.getId());
-      statement.executeUpdate();
-    } catch (SQLException | DaoConfigurationException e) {
-      throw new DaoException(e);
-    }
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    Object[] obj = DaoService.set(computer);
+    jdbcTemplate.update(UPDATE, obj, computer.getId());
+
   }
 
   @Override
   public void delete(long id) {
-    try (Connection connect = TransactionManager.currentConnection();
-        PreparedStatement statement = connect.prepareStatement(DELETE);) {
 
-      statement.setLong(1, id);
-      statement.executeUpdate();
-    } catch (SQLException | DaoConfigurationException e) {
-      throw new DaoException(e);
-    }
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    jdbcTemplate.update(DELETE, id);
+
   }
 }

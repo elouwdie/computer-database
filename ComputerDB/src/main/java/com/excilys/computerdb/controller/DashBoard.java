@@ -1,20 +1,26 @@
 package com.excilys.computerdb.controller;
 
-import com.excilys.computerdb.cli.TraitementCli;
-import com.excilys.computerdb.dao.exception.DaoException;
-import com.excilys.computerdb.enumeration.EnumSearch;
-import com.excilys.computerdb.page.Page;
-import com.excilys.computerdb.service.ComputerService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.excilys.computerdb.cli.TraitementCli;
+import com.excilys.computerdb.dao.exception.DaoException;
+import com.excilys.computerdb.enumeration.EnumSearch;
+import com.excilys.computerdb.page.Page;
+import com.excilys.computerdb.service.CompanyService;
+import com.excilys.computerdb.service.ComputerService;
+import com.excilys.computerdb.service.impl.CompanyServiceImpl;
+import com.excilys.computerdb.service.impl.ComputerServiceImpl;
 
 /**
  * The main menu, here the user can check the list of computers,
@@ -23,17 +29,26 @@ import javax.servlet.http.HttpServletResponse;
 public class DashBoard extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
-  static Logger log;
+  public static final Logger LOG = LoggerFactory.getLogger(TraitementCli.class);
+  CompanyService companyService;
+  ComputerService computerService;
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    WebApplicationContext wac =
+        WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+    companyService = wac.getBean("companyService", CompanyServiceImpl.class);
+    computerService = wac.getBean("computerService", ComputerServiceImpl.class);
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    log = LoggerFactory.getLogger(TraitementCli.class);
-
     try {
       String name = null;
-      Page page = new Page(1, ComputerService.getCount(), 10);
+      Page page = new Page(1, computerService.getCount(), 10);
 
       if (request.getParameter("page") != null) {
         page.setNumber(Math.max(Integer.parseInt(request.getParameter("page")), 1));
@@ -44,15 +59,15 @@ public class DashBoard extends HttpServlet {
       if (request.getParameter("search") != null) {
         name = request.getParameter("search");
         if (request.getParameter("searchCompany") != null) {
-          page.setNbComputers(ComputerService.getCountBy(EnumSearch.COMPANY, name));
-          ComputerService.findByName(EnumSearch.COMPANY, name, page);
+          page.setNbComputers(computerService.getCountBy(EnumSearch.COMPANY, name));
+          computerService.findByName(EnumSearch.COMPANY, name, page);
         } else {
-          page.setNbComputers(ComputerService.getCountBy(EnumSearch.NAME, name));
-          ComputerService.findByName(EnumSearch.NAME, name, page);
+          page.setNbComputers(computerService.getCountBy(EnumSearch.NAME, name));
+          computerService.findByName(EnumSearch.NAME, name, page);
         }
         request.setAttribute("search", request.getParameter("search"));
       } else {
-        ComputerService.findAll(page);
+        computerService.findAll(page);
       }
 
       request.setAttribute("employeeList", page.getComputers());
@@ -61,7 +76,7 @@ public class DashBoard extends HttpServlet {
       request.setAttribute("currentPage", page.getNumber());
       request.setAttribute("records", page.getLimit());
     } catch (DaoException e) {
-      log.error(e.getMessage());
+      LOG.error(e.getMessage());
     }
 
     this.getServletContext().getRequestDispatcher("/WEB-INF/mainmenu.jsp").forward(request,
@@ -76,7 +91,6 @@ public class DashBoard extends HttpServlet {
     for (String i : tab) {
       System.out.println("Deleting computer" + i);
     }
-
     doGet(request, response);
   }
 }

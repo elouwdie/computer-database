@@ -1,4 +1,4 @@
-/home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/testdao/ComputerDaoImplTest.java
-/home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/testdatabase/DbTestConnector.java
-/home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/seleniumtest/MainTest.java
 /home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/testconnectionbdd/TestInteractions.java
+/home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/testdatabase/DbTestConnector.java
+/home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/testdao/ComputerDaoImplTest.java
+/home/excilys/Documents/computerDB/Git/ComputerDB/src/test/java/com/excilys/computerdb/seleniumtest/MainTest.java

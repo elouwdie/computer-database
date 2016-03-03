@@ -1,13 +1,12 @@
 package com.excilys.computerdb.mapper;
 
+import java.time.LocalDate;
+
 import com.excilys.computerdb.dto.ComputerDto;
 import com.excilys.computerdb.mapper.exception.MapperException;
 import com.excilys.computerdb.model.Computer;
-import com.excilys.computerdb.service.CompanyService;
 import com.excilys.computerdb.validation.DataVerification;
 import com.excilys.computerdb.validation.exception.DataException;
-
-import java.time.LocalDate;
 
 /**
  * Converts a ResultSet to a ComputerDTO object.
@@ -40,7 +39,6 @@ public class MapperDtoComputer {
       computer.setName(computerDto.getName());
       computer.setIntroduced(intro);
       computer.setDiscontinued(discont);
-      computer.setCompany(CompanyService.findById(computerDto.getCompanyId()));
     } catch (DataException e) {
       throw new MapperException("Computer object wasn't created. Cause : \n\t" + e.getMessage());
     }

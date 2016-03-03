@@ -1,7 +1,5 @@
 package com.excilys.computerdb.cli;
 
-import static com.excilys.computerdb.cli.TraitementCli.messageStandard;
-
 /**
  * Principal class. The user will enter the action he wants to do, and execute
  * it here.
@@ -14,6 +12,7 @@ public class Main {
    * @param args .
    */
   public static void main(String[] args) {
-    messageStandard();
+    TraitementCli cli = new TraitementCli();
+    cli.messageStandard();
   }
 }

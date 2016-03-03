@@ -1,14 +1,5 @@
 package com.excilys.computerdb.dao.impl;
 
-import com.excilys.computerdb.dao.CompanyDao;
-import com.excilys.computerdb.dao.exception.DaoException;
-import com.excilys.computerdb.jdbc.exception.DaoConfigurationException;
-import com.excilys.computerdb.mapper.MapperDaoCompany;
-import com.excilys.computerdb.mapper.exception.MapperException;
-import com.excilys.computerdb.model.Company;
-import com.excilys.computerdb.service.DaoService;
-import com.excilys.computerdb.transaction.TransactionManager;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
+
+import com.excilys.computerdb.dao.CompanyDao;
+import com.excilys.computerdb.dao.exception.DaoException;
+import com.excilys.computerdb.jdbc.exception.DaoConfigurationException;
+import com.excilys.computerdb.mapper.MapperDaoCompany;
+import com.excilys.computerdb.mapper.exception.MapperException;
+import com.excilys.computerdb.model.Company;
+import com.excilys.computerdb.service.DaoService;
 
 public class CompanyDaoImpl implements CompanyDao {
 
@@ -27,13 +28,19 @@ public class CompanyDaoImpl implements CompanyDao {
   public static final String WHERE_NAME = " WHERE company.name like ?";
   public static final String WHERE_ID = " WHERE id = ?";
 
+  private DataSource dataSource;
+
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
   @Override
   public List<Company> findAll() {
     Company company = new Company();
     ResultSet resultSet = null;
     List<Company> companies = new ArrayList<>();
 
-    try (Connection connect = TransactionManager.currentConnection();
+    try (Connection connect = dataSource.getConnection();
         Statement statement = connect.createStatement();) {
 
       resultSet = statement.executeQuery(FIND_ALL);
@@ -53,7 +60,7 @@ public class CompanyDaoImpl implements CompanyDao {
 
   @Override
   public void delete(long id) {
-    try (Connection connect = TransactionManager.currentConnection();
+    try (Connection connect = dataSource.getConnection();
         PreparedStatement statement = connect.prepareStatement(DELETE);
         PreparedStatement statementComputer = connect.prepareStatement(DELETE_COMPUTER);) {
 
@@ -79,7 +86,7 @@ public class CompanyDaoImpl implements CompanyDao {
     Company company = null;
     ResultSet resultSet = null;
 
-    try (Connection connect = TransactionManager.currentConnection();
+    try (Connection connect = dataSource.getConnection();
         PreparedStatement statement = connect.prepareStatement(FIND_ALL + WHERE_ID);) {
 
       statement.setLong(1, id);

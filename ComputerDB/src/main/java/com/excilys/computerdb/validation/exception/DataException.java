@@ -1,6 +1,6 @@
 package com.excilys.computerdb.validation.exception;
 
-public class DataException extends RuntimeException {
+public class DataException extends Exception {
 
   private static final long serialVersionUID = 1L;
 

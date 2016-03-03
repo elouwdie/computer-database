@@ -1,30 +1,40 @@
 package com.excilys.computerdb.cli;
 
+import java.time.LocalDate;
+import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.page.Page;
 import com.excilys.computerdb.service.CompanyService;
 import com.excilys.computerdb.service.ComputerService;
+import com.excilys.computerdb.service.impl.CompanyServiceImpl;
+import com.excilys.computerdb.service.impl.ComputerServiceImpl;
 import com.excilys.computerdb.validation.DataVerification;
 import com.excilys.computerdb.validation.exception.DataException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.LocalDate;
-import java.util.Scanner;
-
 public class TraitementCli {
 
-  public static final Scanner REP_UTILISATEUR = new Scanner(System.in);
-  static Logger log;
+  public final Scanner REP_UTILISATEUR = new Scanner(System.in);
+  Logger log;
+  ClassPathXmlApplicationContext ctx;
+  ComputerService computerService;
+  CompanyService companyService;
 
   /**
    * Main menu, where the user can choose an action to do.
    */
-  public static void messageStandard() {
+  public void messageStandard() {
     boolean continuer = true;
     log = LoggerFactory.getLogger(TraitementCli.class);
+    ctx = new ClassPathXmlApplicationContext(
+        "application-context.xml");
+    computerService = ctx.getBean("computerService", ComputerServiceImpl.class);
+    companyService = ctx.getBean("companyService", CompanyServiceImpl.class);
 
     while (continuer) {
       System.out.println("**********************************" + "\nWhat do you want to do ?"
@@ -67,11 +77,11 @@ public class TraitementCli {
   /**
    * Returns the list of all computers in the database.
    */
-  private static void findAllComputers() {
-    int nbComputers = ComputerService.getCount();
+  private void findAllComputers() {
+    int nbComputers = computerService.getCount();
     Page page = new Page(1, nbComputers, 30);
     while (page.getNumber() <= page.getTotalNbPages()) {
-      ComputerService.findAll(page);
+      computerService.findAll(page);
       System.out.println("**********************************");
       for (Computer c : page.getComputers()) {
         System.out.println("ID : " + c.getId() + " name : " + c.getName());
@@ -94,14 +104,14 @@ public class TraitementCli {
    * Search a computer in the database, and prints its properties The user
    * enters the computer's ID.
    */
-  private static void searchComputer() {
+  private void searchComputer() {
     boolean ok = false;
 
     do {
       System.out.println("\nEnter the id of the computer : " + "\nr : return back");
       if (REP_UTILISATEUR.hasNextLong()) {
         Computer computer = null;
-        computer = ComputerService.findById(REP_UTILISATEUR.nextLong());
+        computer = computerService.findById(REP_UTILISATEUR.nextLong());
         // Verify if the computer exists
         if (computer.getName() != null) {
           System.out.println(computer.toString());
@@ -117,14 +127,14 @@ public class TraitementCli {
    * Search a company in the database, and prints its properties The user enters
    * the company's ID.
    */
-  private static void searchCompany() {
+  private void searchCompany() {
     boolean ok = false;
 
     do {
       System.out.println("\nEnter the id of the company : " + "\nr : return back");
       if (REP_UTILISATEUR.hasNextLong()) {
         Company company = null;
-        company = CompanyService.findById(REP_UTILISATEUR.nextLong());
+        company = companyService.findById(REP_UTILISATEUR.nextLong());
         // Verify if the company exists
         if (company.getName() != null) {
           ok = true;
@@ -140,7 +150,7 @@ public class TraitementCli {
    * Creates a computer in the database. Asks the user what he wants to detail,
    * but the name is a required field
    */
-  private static void createComputer() {
+  private void createComputer() {
     LocalDate intro = null;
     LocalDate discont = null;
     Company company = null;
@@ -154,6 +164,8 @@ public class TraitementCli {
       System.out.println("\nEnter the introduction date of the computer ? y/n");
       if (REP_UTILISATEUR.next().equals("y")) {
         intro = enterDate();
+      } else {
+        ok = true;
       }
       // discontinued date
       System.out.println("\nEnter the date when computer discontinued ? y/n");
@@ -165,6 +177,8 @@ public class TraitementCli {
         } catch (DataException e) {
           log.error(e.getMessage());
         }
+      } else {
+        ok = true;
       }
     } while (!ok);
     // company ID
@@ -174,7 +188,7 @@ public class TraitementCli {
       while (!ok2) {
         System.out.println("\nCompany ID ?");
         if (REP_UTILISATEUR.hasNextLong()) {
-          company = CompanyService.findById(REP_UTILISATEUR.nextLong());
+          company = companyService.findById(REP_UTILISATEUR.nextLong());
           ok2 = (company != null);
         } else {
           log.error("This ID is not valid.");
@@ -183,14 +197,14 @@ public class TraitementCli {
     }
     // Creates the computer in the database
     Computer computer = new Computer(name, intro, discont, company);
-    ComputerService.create(computer);
+    computerService.create(computer);
   }
 
   /**
    * Modifies a computer already existing in the database. The user can modify
    * the name of the computer, the dates, and the company.
    */
-  private static void updateComputer() {
+  private void updateComputer() {
     long companyId = 0;
     Computer computer = null;
     boolean ok = false;
@@ -198,7 +212,7 @@ public class TraitementCli {
     do {
       System.out.println("\nEnter the id of the computer to update: " + "\nr : return back");
       if (REP_UTILISATEUR.hasNextLong()) {
-        computer = ComputerService.findById(REP_UTILISATEUR.nextLong());
+        computer = computerService.findById(REP_UTILISATEUR.nextLong());
         // Verify if the computer exists
         if (computer.getName() != null) {
 
@@ -241,13 +255,13 @@ public class TraitementCli {
               } else {
                 log.error("This ID is not valid.");
               }
-            } while (!DataVerification.isCompanyOk(companyId));
-            computer.setCompany(CompanyService.findById(companyId));
+            } while (companyService.findById(companyId) == null);
+            computer.setCompany(companyService.findById(companyId));
           }
         }
       }
       // Updating the database
-      ComputerService.update(computer);
+      computerService.update(computer);
       ok = true;
       log.info("Modification complete");
     } while (!REP_UTILISATEUR.nextLine().trim().equals("r") && !ok);
@@ -258,18 +272,18 @@ public class TraitementCli {
    * Verifies if the computer entered exists, and if it does, delete it. The
    * user enters the computer's ID.
    */
-  private static void deleteComputer() {
+  private void deleteComputer() {
     boolean ok = false;
 
     do {
       System.out.println("\nEnter the id of the computer to delete: " + "\nr : return back");
       if (REP_UTILISATEUR.hasNextLong()) {
         Computer computer = null;
-        computer = ComputerService.findById(REP_UTILISATEUR.nextLong());
+        computer = computerService.findById(REP_UTILISATEUR.nextLong());
         // Verify if the computer exists
         if (computer.getName() != null) {
           // Deletes the computer in the database
-          ComputerService.delete(computer.getId());
+          computerService.delete(computer.getId());
           ok = true;
           log.info("\nSuppression done.");
         } else {
@@ -283,18 +297,18 @@ public class TraitementCli {
    * Verifies if the computer entered exists, and if it does, delete it. The
    * user enters the computer's ID.
    */
-  private static void deleteCompany() {
+  private void deleteCompany() {
     boolean ok = false;
 
     do {
       System.out.println("\nEnter the id of the company to delete: " + "\nr : return back");
       if (REP_UTILISATEUR.hasNextLong()) {
         Company company = null;
-        company = CompanyService.findById(REP_UTILISATEUR.nextLong());
+        company = companyService.findById(REP_UTILISATEUR.nextLong());
         // Verify if the computer exists
         if (company.getName() != null) {
           // Deletes the computer in the database
-          CompanyService.delete(company.getId());
+          companyService.delete(company.getId());
           ok = true;
           log.info("\nSuppression done.");
         } else {
@@ -309,7 +323,7 @@ public class TraitementCli {
    * then the month, and finally the day.
    * @return the object LocalDate created with those details.
    */
-  private static LocalDate enterDate() {
+  private LocalDate enterDate() {
     boolean ok = false;
     int year = 0;
     int month = 0;
@@ -333,8 +347,9 @@ public class TraitementCli {
   /**
    * Stops the command-line input.
    */
-  private static void quit() {
+  private void quit() {
     REP_UTILISATEUR.close();
+    ctx.close();
     log.info("Au revoir et à bientôt !");
   }
 }

@@ -1,9 +1,8 @@
 package com.excilys.computerdb.validation;
 
-import com.excilys.computerdb.service.CompanyService;
-import com.excilys.computerdb.validation.exception.DataException;
-
 import java.time.LocalDate;
+
+import com.excilys.computerdb.validation.exception.DataException;
 
 /**
  * Contains all possible verifications of the given data.
@@ -53,15 +52,6 @@ public class DataVerification {
       }
     }
     return false;
-  }
-
-  /**
-   * Verifies if the company id is valid.
-   * @param companyId : the id of the company.
-   * @return : true if the company is is valid, false if not.
-   */
-  public static boolean isCompanyOk(long companyId) {
-    return (CompanyService.findById(companyId) != null);
   }
 
 }
