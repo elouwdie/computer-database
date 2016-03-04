@@ -34,7 +34,7 @@ public class ComputerDaoImplTest {
   @BeforeClass
   public static void init() {
     ctx = new ClassPathXmlApplicationContext(
-        "application-context.xml");
+        "test-context.xml");
 
     computerDAO = ctx.getBean("computerDAO", ComputerDaoImpl.class);
     companyDAO = ctx.getBean("companyDAO", CompanyDaoImpl.class);

@@ -1,4 +1,4 @@
-package com.excilys.computerdb.service;
+package com.excilys.computerdb.service.impl;
 
 import com.excilys.computerdb.page.Page;
 

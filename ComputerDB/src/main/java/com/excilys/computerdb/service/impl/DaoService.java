@@ -1,10 +1,7 @@
-package com.excilys.computerdb.service;
+package com.excilys.computerdb.service.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import com.excilys.computerdb.dao.exception.DaoException;
 import com.excilys.computerdb.model.Computer;
 
 public class DaoService {
@@ -35,17 +32,4 @@ public class DaoService {
     }
     return objects;
   }
-
-  /**
-   * Closes the given resultset.
-   * @param rs : the resultset to close.
-   */
-  public static void closeRs(ResultSet rs) {
-    try {
-      rs.close();
-    } catch (SQLException e) {
-      throw new DaoException(e);
-    }
-  }
-
 }

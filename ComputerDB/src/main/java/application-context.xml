@@ -20,10 +20,7 @@
 		<property name="dataSource" ref="mainDataSource" />
 	</bean>
 
-	<context:property-placeholder location="classpath:jdbc.properties" />
-	<bean id="baseMgr" class="com.excilys.computerdb.jdbc.ConnectionMySql">
-		<property name="dataSource" ref="mainDataSource" />
-	</bean>
+	<context:property-placeholder location="classpath:jdbc.properties" />	
 
 	<!-- BoneCP configuration -->
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"

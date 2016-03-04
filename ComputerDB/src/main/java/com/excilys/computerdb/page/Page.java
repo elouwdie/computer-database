@@ -1,7 +1,7 @@
 package com.excilys.computerdb.page;
 
 import com.excilys.computerdb.model.Computer;
-import com.excilys.computerdb.service.PageService;
+import com.excilys.computerdb.service.impl.PageService;
 
 import java.util.List;
 

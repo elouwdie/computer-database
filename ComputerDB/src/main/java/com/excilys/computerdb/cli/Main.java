@@ -9,7 +9,7 @@ package com.excilys.computerdb.cli;
 public class Main {
 
   /**
-   * @param args .
+   * @param args : Not used here.
    */
   public static void main(String[] args) {
     TraitementCli cli = new TraitementCli();

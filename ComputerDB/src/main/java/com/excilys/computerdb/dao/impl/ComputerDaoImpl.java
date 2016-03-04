@@ -11,11 +11,12 @@ import com.excilys.computerdb.enumeration.EnumSearch;
 import com.excilys.computerdb.mapper.MapperDaoComputer;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.page.Page;
-import com.excilys.computerdb.service.DaoService;
+import com.excilys.computerdb.service.impl.DaoService;
 
 public class ComputerDaoImpl implements ComputerDao {
 
   public static final String SELECT_COUNT = "SELECT COUNT(*) FROM computer";
+  public static final String SELECT_COUNT_JOIN = "SELECT COUNT(*) FROM computer LEFT JOIN company ON computer.company_id = company.id";
   public static final String WHERE_NAME = " WHERE computer.name like ?";
   public static final String WHERE_COMPANY = " WHERE company.name like ?";
   public static final String WHERE_ID = " WHERE computer.id = ?";
@@ -46,18 +47,16 @@ public class ComputerDaoImpl implements ComputerDao {
 
   @Override
   public int getCountBy(EnumSearch search, String name) {
-    String where = null;
-
-    if (search.equals(EnumSearch.NAME)) {
-      where = WHERE_NAME;
-    } else {
-      where = WHERE_COMPANY;
-    }
 
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    nbComputers =
-        jdbcTemplate.queryForObject(SELECT_COUNT + where, Integer.class, "%" + name + "%");
 
+    if (search.equals(EnumSearch.NAME)) {
+      nbComputers =
+          jdbcTemplate.queryForObject(SELECT_COUNT + WHERE_NAME, Integer.class, "%" + name + "%");
+    } else {
+      nbComputers =
+          jdbcTemplate.queryForObject(SELECT_COUNT_JOIN + WHERE_COMPANY, Integer.class, "%" + name + "%");
+    }
     return nbComputers;
   }
 

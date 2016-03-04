@@ -51,7 +51,7 @@ public class MapperDtoComputer {
    * @return the corresponding ComputerDto.
    * @throws MapperException : when the data are not correct.
    */
-  public static ComputerDto computerToDto(Computer computer) throws MapperException {
+  public static ComputerDto computerToDto(Computer computer) {
     String introduced = null;
     String discontinued = null;
     long companyId = 0;
