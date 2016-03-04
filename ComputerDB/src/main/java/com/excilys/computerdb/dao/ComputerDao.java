@@ -77,4 +77,9 @@ public interface ComputerDao {
    */
   void delete(long id) throws DaoException;
 
+  /**
+   * Deletes all computers in the database with the given company_id.
+   * @param companyId : the id of the company.
+   */
+  void deleteByCompany(long companyId);
 }

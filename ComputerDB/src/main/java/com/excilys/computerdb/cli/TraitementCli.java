@@ -348,8 +348,8 @@ public class TraitementCli {
    * Stops the command-line input.
    */
   private void quit() {
-    REP_UTILISATEUR.close();
-    ctx.close();
     log.info("Au revoir et à bientôt !");
+    ctx.close();
+    REP_UTILISATEUR.close();
   }
 }

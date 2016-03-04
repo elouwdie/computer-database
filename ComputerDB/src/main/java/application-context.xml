@@ -34,12 +34,6 @@
 		<property name="partitionCount" value="2" />
 		<property name="deregisterDriverOnClose" value="true" />
 	</bean>
-
-	<!-- Transaction configuration -->
-	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="mainDataSource" />
-	</bean>
 	 
     <bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
         <property name="dataSource" ref="mainDataSource"></property>
@@ -55,5 +49,6 @@
  
     <bean id="companyService" class="com.excilys.computerdb.service.impl.CompanyServiceImpl">
         <property name="companyDAO" ref="companyDAO"></property>
+        <property name="computerDAO" ref="computerDAO"></property>
     </bean>
 </beans>

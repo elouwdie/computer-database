@@ -16,7 +16,7 @@ import com.excilys.computerdb.service.impl.DaoService;
 public class ComputerDaoImpl implements ComputerDao {
 
   public static final String SELECT_COUNT = "SELECT COUNT(*) FROM computer";
-  public static final String SELECT_COUNT_JOIN = "SELECT COUNT(*) FROM computer LEFT JOIN company ON computer.company_id = company.id";
+  public static final String JOIN_COMPANY = " LEFT JOIN company ON computer.company_id = company.id";
   public static final String WHERE_NAME = " WHERE computer.name like ?";
   public static final String WHERE_COMPANY = " WHERE company.name like ?";
   public static final String WHERE_ID = " WHERE computer.id = ?";
@@ -25,6 +25,7 @@ public class ComputerDaoImpl implements ComputerDao {
   public static final String UPDATE =
       "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
   public static final String DELETE = "DELETE FROM computer WHERE id = ?";
+  public static final String DELETE_BY_COMPANY = "DELETE FROM computer WHERE company_id = ?";
   public static final String INSERT =
       "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
   public static final String OFFSET_LIMIT = " LIMIT ? OFFSET ?";
@@ -55,7 +56,7 @@ public class ComputerDaoImpl implements ComputerDao {
           jdbcTemplate.queryForObject(SELECT_COUNT + WHERE_NAME, Integer.class, "%" + name + "%");
     } else {
       nbComputers =
-          jdbcTemplate.queryForObject(SELECT_COUNT_JOIN + WHERE_COMPANY, Integer.class, "%" + name + "%");
+          jdbcTemplate.queryForObject(SELECT_COUNT + JOIN_COMPANY + WHERE_COMPANY, Integer.class, "%" + name + "%");
     }
     return nbComputers;
   }
@@ -107,7 +108,6 @@ public class ComputerDaoImpl implements ComputerDao {
 
     Object[] obj = DaoService.set(computer);
     jdbcTemplate.update(INSERT, obj);
-
   }
 
   @Override
@@ -116,7 +116,6 @@ public class ComputerDaoImpl implements ComputerDao {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     Object[] obj = DaoService.set(computer);
     jdbcTemplate.update(UPDATE, obj, computer.getId());
-
   }
 
   @Override
@@ -124,6 +123,11 @@ public class ComputerDaoImpl implements ComputerDao {
 
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.update(DELETE, id);
+  }
 
+  @Override
+  public void deleteByCompany(long companyId) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    jdbcTemplate.update(DELETE_BY_COMPANY, companyId);
   }
 }

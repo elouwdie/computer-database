@@ -29,13 +29,12 @@ public class ComputerDaoImplTest {
   private static ClassPathXmlApplicationContext ctx;
 
   /**
-   * Initializes the database, and the test data.
+   * Initializes the context, and the test data.
    */
   @BeforeClass
   public static void init() {
     ctx = new ClassPathXmlApplicationContext(
-        "test-context.xml");
-
+        "application-context.xml");
     computerDAO = ctx.getBean("computerDAO", ComputerDaoImpl.class);
     companyDAO = ctx.getBean("companyDAO", CompanyDaoImpl.class);
     company = new Company();
@@ -44,12 +43,14 @@ public class ComputerDaoImplTest {
     computer = new Computer();
     computer.setId(1);
     computer.setName("MacBook Pro 15.4 inch");
-
   }
 
   @AfterClass
   public static void end() {
     computerDAO = null;
+    companyDAO = null;
+    company = null;
+    computer = null;
     ctx.close();
   }
 
@@ -64,10 +65,6 @@ public class ComputerDaoImplTest {
         companyDAO.findById(1));
   }
 
-  /*
-   * @Test public void testAllComputers() { assertTrue(computerDAO.findAll(new
-   * Page(1, 10)).size() > 0); }
-   */
   @Test
   public void testFindComputer() {
     computer.setCompany(company);
@@ -102,5 +99,4 @@ public class ComputerDaoImplTest {
         "testUpdate");
     computerDAO.delete(computer.getId());
   }
-
 }

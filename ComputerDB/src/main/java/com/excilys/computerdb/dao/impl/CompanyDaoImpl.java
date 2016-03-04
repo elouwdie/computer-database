@@ -14,7 +14,6 @@ public class CompanyDaoImpl implements CompanyDao {
 
   public static final String FIND_ALL = "SELECT * FROM company";
   public static final String DELETE = "DELETE FROM company WHERE id = ?";
-  public static final String DELETE_COMPUTER = "DELETE FROM computer WHERE company_id = ?";
   public static final String WHERE_ID = " WHERE id = ?";
 
   private DataSource dataSource;
@@ -35,9 +34,9 @@ public class CompanyDaoImpl implements CompanyDao {
 
   @Override
   public void delete(long id) {
+    // throw new DaoException("nope");
 
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    jdbcTemplate.update(DELETE_COMPUTER, id);
     jdbcTemplate.update(DELETE, id);
 
   }
