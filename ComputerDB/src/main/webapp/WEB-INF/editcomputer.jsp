@@ -55,7 +55,7 @@
 												<option value="${company.id}" selected="selected">${company.getName()}</option>
 											</c:when>
 											<c:otherwise>
-												<option value="${company.id}">${company.getName()}</option>
+												<option value="${company.id}">${company.name}</option>
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>

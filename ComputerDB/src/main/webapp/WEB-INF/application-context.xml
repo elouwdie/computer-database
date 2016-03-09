@@ -13,8 +13,7 @@
 	<tx:annotation-driven proxy-target-class="true"
 		transaction-manager="transactionManager" />
 
-	<!-- Creating TransactionManager Bean, since JDBC we are creating of type 
-		DataSourceTransactionManager -->
+	<!-- Transaction configuration -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="mainDataSource" />
@@ -33,12 +32,6 @@
 		<property name="minConnectionsPerPartition" value="5" />
 		<property name="partitionCount" value="2" />
 		<property name="deregisterDriverOnClose" value="true" />
-	</bean>
-
-	<!-- Transaction configuration -->
-	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="mainDataSource" />
 	</bean>
 
 	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">

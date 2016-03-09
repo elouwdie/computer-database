@@ -2,6 +2,8 @@ package com.excilys.computerdb.model;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * Class computer : corresponds to an instance of the table computer in the
  * database.
@@ -9,11 +11,12 @@ import java.time.LocalDate;
  *
  */
 public class Computer {
-  private long id = 0;
-  private Company company = null;
-  private String name = null;
-  private LocalDate introduced = null;
-  private LocalDate discontinued = null;
+  private long id;
+  private Company company;
+  private String name;
+  private LocalDate introduced;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private LocalDate discontinued;
 
   /**
    * Creates a new empty computer.

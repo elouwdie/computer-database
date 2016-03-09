@@ -1,86 +1,58 @@
 package com.excilys.computerdb.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.computerdb.cli.TraitementCli;
 import com.excilys.computerdb.dto.ComputerDto;
 import com.excilys.computerdb.mapper.MapperDtoComputer;
+import com.excilys.computerdb.mapper.exception.MapperException;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.service.CompanyService;
-import com.excilys.computerdb.service.impl.CompanyServiceImpl;
 
-public class AddComputerMenu extends HttpServlet {
+@Controller
+@RequestMapping("/addcomputer")
+public class AddComputerMenu {
 
-  private static final long serialVersionUID = 1L;
-  static Logger log;
-  CompanyService companyService;
+  public static final Logger LOG = LoggerFactory.getLogger(TraitementCli.class);
 
-  @Override
-  public void init(ServletConfig config) throws ServletException {
-    super.init(config);
-    WebApplicationContext wac =
-        WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-    companyService = wac.getBean("companyService", CompanyServiceImpl.class);
-  }
+  @Autowired
+  private CompanyService companyService;
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-
+  @RequestMapping(method = RequestMethod.GET)
+  protected String doGet(Model model) {
     List<Company> companies = companyService.findAll();
 
-    request.setAttribute("companies", companies);
+    ComputerDto computerDTO = new ComputerDto();
+    model.addAttribute("computerDTO", computerDTO);
 
-    this.getServletContext().getRequestDispatcher("/WEB-INF/addcomputermenu.jsp").forward(request,
-        response);
+    model.addAttribute("companies", companies);
+    return "addcomputer";
   }
 
-  @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    ComputerDto computerDto = new ComputerDto();
-    log = LoggerFactory.getLogger(TraitementCli.class);
+  @RequestMapping(method = RequestMethod.POST)
+  protected String doPost(@ModelAttribute("computerDTO") @Valid ComputerDto computerDTO,
+      BindingResult bindingResult) throws MapperException {
 
-    String paramName = request.getParameter("computerName");
-    if (paramName != null) {
-      computerDto.setName(paramName);
+    if (bindingResult.hasErrors()) {
+      System.out.println("errooooooooooor");
+      return "addcomputer";
     }
-
-    String paramIntroduced = request.getParameter("introduced");
-    if (paramIntroduced != null) {
-      if (!paramIntroduced.equals("")) {
-        computerDto.setIntroduced(paramIntroduced);
-      }
-    }
-
-    String paramDiscontinued = request.getParameter("discontinued");
-    if (paramDiscontinued != null) {
-      if (!paramDiscontinued.equals("")) {
-        computerDto.setDiscontinued(paramDiscontinued);
-      }
-    }
-
-    String paramCompanyId = request.getParameter("companyId");
-    if (!paramCompanyId.equals("--")) {
-      computerDto.setCompanyId(Integer.parseInt(request.getParameter("companyId")));
-    }
-
-    Computer computer = MapperDtoComputer.dtoToComputer(computerDto);
+    Computer computer = MapperDtoComputer.dtoToComputer(computerDTO, companyService);
     System.out.println(computer.toString());
 
-    doGet(request, response);
+    return "redirect:/computerdb";
   }
 }

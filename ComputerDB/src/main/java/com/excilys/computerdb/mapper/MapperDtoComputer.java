@@ -1,10 +1,12 @@
 package com.excilys.computerdb.mapper;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import com.excilys.computerdb.dto.ComputerDto;
 import com.excilys.computerdb.mapper.exception.MapperException;
 import com.excilys.computerdb.model.Computer;
+import com.excilys.computerdb.service.CompanyService;
 import com.excilys.computerdb.validation.DataVerification;
 import com.excilys.computerdb.validation.exception.DataException;
 
@@ -18,28 +20,30 @@ public class MapperDtoComputer {
   /**
    * Converts the given ComputerDto to a Computer.
    * @param computerDto : the ComputerDto to convert.
+   * @param companyService : the company service, finds a company with an id.
    * @return the corresponding Computer.
    * @throws MapperException : when the data are not correct.
    */
-  public static Computer dtoToComputer(ComputerDto computerDto) throws MapperException {
+  public static Computer dtoToComputer(ComputerDto computerDto, CompanyService companyService) throws MapperException {
     Computer computer = null;
     LocalDate intro = null;
     LocalDate discont = null;
 
-    if (computerDto.getIntroduced() != null) {
-      intro = LocalDate.parse(computerDto.getIntroduced());
-    }
-    if (computerDto.getDiscontinued() != null) {
-      discont = LocalDate.parse(computerDto.getDiscontinued());
-    }
     try {
+      if (!computerDto.getIntroduced().isEmpty()) {
+        intro = LocalDate.parse(computerDto.getIntroduced());
+      }
+      if (!computerDto.getDiscontinued().isEmpty()) {
+        discont = LocalDate.parse(computerDto.getDiscontinued());
+      }
       DataVerification.areDatesOk(intro, discont);
       computer = new Computer();
       computer.setId(computerDto.getId());
       computer.setName(computerDto.getName());
       computer.setIntroduced(intro);
       computer.setDiscontinued(discont);
-    } catch (DataException e) {
+      computer.setCompany(companyService.findById(computerDto.getCompanyId()));
+    } catch (DataException | DateTimeParseException e) {
       throw new MapperException("Computer object wasn't created. Cause : \n\t" + e.getMessage());
     }
     return computer;

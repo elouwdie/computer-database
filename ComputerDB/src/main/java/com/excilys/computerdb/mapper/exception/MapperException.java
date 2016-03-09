@@ -1,6 +1,6 @@
 package com.excilys.computerdb.mapper.exception;
 
-public class MapperException extends RuntimeException {
+public class MapperException extends Exception {
 
   private static final long serialVersionUID = 1L;
 

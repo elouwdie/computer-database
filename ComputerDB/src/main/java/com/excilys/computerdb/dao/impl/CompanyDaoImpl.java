@@ -43,9 +43,9 @@ public class CompanyDaoImpl implements CompanyDao {
 
   @Override
   public Company findById(long id) {
-
+    Company company = null;
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    Company company = (Company) jdbcTemplate.queryForObject(
+    company = (Company) jdbcTemplate.queryForObject(
         FIND_ALL + WHERE_ID, new MapperDaoCompany(), id);
 
     return company;

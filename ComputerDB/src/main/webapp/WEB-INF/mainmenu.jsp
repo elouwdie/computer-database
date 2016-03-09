@@ -5,7 +5,12 @@
 <head>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags"%>
-<title>Computer Database</title>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<spring:message code="filter.name" var="filterName" />
+<spring:message code="filter.company" var="filterCompany" />
+
+<title><spring:message code="main.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
@@ -16,38 +21,43 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="#"> Application - Computer Database
+			<a class="navbar-brand" href="#"> <spring:message
+					code="main.title" />
 			</a>
 		</div>
-		offset sql
+		<a href="?lang=en" class="btn btn-default"> En </a> <a href="?lang=fr"
+			class="btn btn-default"> Fr </a>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${size}Computersfound</h1>
+			<h1 id="homeTitle">${size}
+				<spring:message code="computers.found" />
+			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" method="GET" class="form-inline">
 						<input type="hidden" name="page" value="${currentPage}" /> <input
 							type="hidden" name="records" value="${records}" /> <input
 							type="search" id="searchbox" name="search" value="${search}"
-							class="form-control" placeholder="Search" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control" placeholder=<spring:message code="search" /> />
+						<input type="submit" id="searchsubmit" value="${filterName}"
 							class="btn btn-primary" /><input type="submit"
 							id="searchCompanysubmit" name="searchCompany"
-							value="Filter by company" class="btn btn-primary" />
+							value="${filterCompany}" class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addcomputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addcomputer">
+						<spring:message code="add" />
+					</a> <a class="btn btn-default" id="editComputer" href="#"
+						onclick="$.fn.toggleEditMode();"> <spring:message code="edit" /></a>
 				</div>
 			</div>
 		</div>
 
 		<form id="deleteForm" action="computerdb" method="POST">
-			<input type="hidden" name="selection" value=""> 
+			<input type="hidden" name="selection" value="">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -64,10 +74,10 @@
 									<i class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
-						<th>Discontinued date</th>
-						<th>Company</th>
+						<th><spring:message code="computer.name" /></th>
+						<th><spring:message code="computer.intro" /></th>
+						<th><spring:message code="computer.disc" /></th>
+						<th><spring:message code="computer.company" /></th>
 
 					</tr>
 				</thead>

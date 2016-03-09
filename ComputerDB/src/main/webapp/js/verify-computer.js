@@ -1,6 +1,3 @@
-/**
- * 
- */
 jQuery.validator.addMethod("greaterThan", function(value, element, params) {
 		return new Date(value) >= new Date($(params).val()) || value == "";
 }, 'Must be greater than {0}.');
