@@ -45,8 +45,10 @@ public class CompanyDaoImpl implements CompanyDao {
   public Company findById(long id) {
     Company company = null;
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    company = (Company) jdbcTemplate.queryForObject(
-        FIND_ALL + WHERE_ID, new MapperDaoCompany(), id);
+    if (id != 0) {
+      company = (Company) jdbcTemplate.queryForObject(
+          FIND_ALL + WHERE_ID, new MapperDaoCompany(), id);
+    }
 
     return company;
   }

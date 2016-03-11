@@ -1,15 +1,19 @@
 package com.excilys.computerdb.controller;
 
+import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.computerdb.enumeration.EnumSearch;
+import com.excilys.computerdb.mapper.MapperDtoComputer;
 import com.excilys.computerdb.page.Page;
 import com.excilys.computerdb.service.CompanyService;
 import com.excilys.computerdb.service.ComputerService;
@@ -33,10 +37,12 @@ public class DashBoard {
       @RequestParam(value = "records", required = false) Integer records,
       @RequestParam(value = "search", required = false) String search,
       @RequestParam(value = "searchCompany", required = false) String searchCompany,
-      ModelMap model) {
+      Model model) {
 
+    Locale locale = LocaleContextHolder.getLocale();
     String name = null;
     Page page = new Page(1, computerService.getCount(), 10);
+
     if (pageNb != null) {
       page.setNumber(Math.max(pageNb, 1));
     }
@@ -59,22 +65,24 @@ public class DashBoard {
       computerService.findAll(page);
     }
 
-    model.addAttribute("employeeList", page.getComputers());
+    model.addAttribute("computers",
+        MapperDtoComputer.computersToDtos(page.getComputers(), companyService, locale.toString()));
     model.addAttribute("noOfPages", page.getTotalNbPages());
     model.addAttribute("size", page.getNbComputers());
     model.addAttribute("currentPage", page.getNumber());
     model.addAttribute("records", page.getLimit());
-    return "mainmenu";
 
+    return "mainmenu";
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  protected String doPost(ModelMap model) {
-    String id = String.valueOf(model.get("selection"));
+  protected String doPost(@RequestParam(value = "selection", required = false) String selection,
+      Model model) {
+    String id = selection;
     String[] tab = id.split(",");
     for (String i : tab) {
-      System.out.println("Deleting computer" + i);
+      System.out.println("Deleting computer " + i);
     }
-    return "mainmenu";
+    return doGet(null, null, null, null, model);
   }
 }

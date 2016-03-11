@@ -1,20 +1,25 @@
 package com.excilys.computerdb.dto;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.excilys.computerdb.validation.annotations.Date;
 
 public class ComputerDto {
 
-  private long id = 0;
-  private long companyId = 0;
-  @NotNull
+  private long id;
+  private long companyId;
+  private String companyName;
+  @NotEmpty
   @Size(min = 2, max = 30)
   private String name;
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @Date
+  @DateTimeFormat(pattern = "{date.pattern}")
   private String introduced;
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @Date
+  @DateTimeFormat(pattern = "{date.pattern}")
   private String discontinued;
 
   /**
@@ -30,6 +35,14 @@ public class ComputerDto {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getCompanyName() {
+    return companyName;
+  }
+
+  public void setCompanyName(String companyName) {
+    this.companyName = companyName;
   }
 
   public long getCompanyId() {

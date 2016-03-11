@@ -13,7 +13,14 @@
 </a></li>
 <c:choose>
 	<c:when test="${noOfPages - currentPage < 5}">
-		<c:set var="begin" value="${currentPage}" scope="page" />
+		<c:choose>
+			<c:when test="${noOfPages > 10}">
+				<c:set var="begin" value="${noOfPages - 10}" scope="page" />
+			</c:when>
+			<c:otherwise>
+				<c:set var="begin" value="${1}" scope="page" />
+			</c:otherwise>
+		</c:choose>
 		<c:set var="end" value="${noOfPages}" scope="page" />
 
 	</c:when>
@@ -39,7 +46,7 @@
 		</c:when>
 		<c:otherwise>
 			<li><a
-				href=<tags:link target="computerdb" page="${i}" limit="${records}" search="${search }" searchCompany="${searchCompany }" />>${i}</a></li>
+				href=<tags:link target="computerdb" page="${i}" limit="${records}" search="${search }" searchCompany="${searchCompany }" /> >${i}</a></li>
 		</c:otherwise>
 	</c:choose>
 </c:forEach>

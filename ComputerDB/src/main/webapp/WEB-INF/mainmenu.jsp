@@ -7,8 +7,21 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<spring:message code="edit" var="edit" />
+<spring:message code="confirm.delete" var="confirmDelete" />
 <spring:message code="filter.name" var="filterName" />
 <spring:message code="filter.company" var="filterCompany" />
+<spring:message code="view" var="view" />
+
+<script>
+	var confirmDelete = '${confirmDelete}';
+</script>
+<script>
+	var edit = '${edit}';
+</script>
+<script>
+	var view = '${view}';
+</script>
 
 <title><spring:message code="main.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,15 +37,26 @@
 			<a class="navbar-brand" href="#"> <spring:message
 					code="main.title" />
 			</a>
+			<div align="right">
+				<a href="?lang=en" class="btn btn-default"> En </a> <a
+					href="?lang=fr" class="btn btn-default"> Fr </a>
+			</div>
 		</div>
-		<a href="?lang=en" class="btn btn-default"> En </a> <a href="?lang=fr"
-			class="btn btn-default"> Fr </a>
 	</header>
 
 	<section id="main">
 		<div class="container">
+
 			<h1 id="homeTitle">${size}
-				<spring:message code="computers.found" />
+
+				<c:choose>
+					<c:when test="${size > 1}">
+						<spring:message code="computers.found" />
+					</c:when>
+					<c:otherwise>
+						<spring:message code="computers.found.sing" />
+					</c:otherwise>
+				</c:choose>
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
@@ -51,7 +75,7 @@
 					<a class="btn btn-success" id="addComputer" href="addcomputer">
 						<spring:message code="add" />
 					</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();"> <spring:message code="edit" /></a>
+						onclick="$.fn.toggleEditMode();"> ${edit} </a>
 				</div>
 			</div>
 		</div>
@@ -83,7 +107,7 @@
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					<c:forEach var="computer" items="${employeeList}">
+					<c:forEach var="computer" items="${computers}">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
@@ -91,7 +115,7 @@
 								onclick=""> ${computer.name} </a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
-							<td>${computer.getCompany().getName()}</td>
+							<td>${computer.getCompanyName()}</td>
 						</tr>
 					</c:forEach>
 				</tbody>

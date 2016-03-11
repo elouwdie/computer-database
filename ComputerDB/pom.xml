@@ -108,6 +108,13 @@
 			<version>${javax.validation}</version>
 		</dependency>
 
+		<!-- Validation hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.0.1.Final</version>
+		</dependency>
+
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -5,7 +5,24 @@
 <head>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<title>Computer Database</title>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<spring:message code="AlphaNum" var="nameAlphaError" />
+<spring:message code="computer.intro" var="computerIntro" />
+<spring:message code="computer.name" var="computerName" />
+<spring:message code="computer.disc" var="computerDisc" />
+<spring:message code="Date" var="datePattern" />
+<spring:message code="GreaterThan" var="datesCompError" />
+<spring:message code="Name" var="nameError" />
+<spring:message code="ValidDate" var="dateError" />
+
+<script>var datesCompError = '${datesCompError}';</script>
+<script>var dateError = '${dateError}';</script>
+<script>var nameAlphaError = '${nameAlphaError}';</script>
+<script>var nameError = '${nameError}';</script>
+<script>var pattern = '${datePattern}';</script>
+
+<title><spring:message code="main.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -15,8 +32,13 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="computerdb"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="computerdb"> <spring:message
+					code="main.title" />
+			</a>
+			<div align="right">
+				<a href="?lang=en" class="btn btn-default"> En </a> <a
+					href="?lang=fr" class="btn btn-default"> Fr </a>
+			</div>
 		</div>
 	</header>
 
@@ -24,28 +46,42 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<h1>Add Computer</h1>
+					<h1>
+						<spring:message code="add.computer" />
+					</h1>
 					<form:form action="addcomputer" id="add"
 						modelAttribute="computerDTO" method="POST" novalidate="novalidate">
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label>
+								<label for="computerName"><spring:message
+										code="computer.name" /></label>
 								<form:input name="computerName" type="text" class="form-control"
-									id="computerName" path="name" placeholder="Computer name" />
+									id="computerName" path="name"
+									placeholder="${computerName}" />
+								<form:errors path="name" cssClass="error"
+									cssStyle="color: #ff0000;" />
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label>
+								<label for="introduced"><spring:message
+										code="computer.intro" /></label>
 								<form:input name="introduced" type="date" class="form-control"
-									id="introduced" path="introduced" placeholder="Introduced date" />
+									id="introduced" path="introduced"
+									placeholder="${computerIntro} (${datePattern })" />
+								<form:errors path="introduced" cssClass="error"
+									cssStyle="color: #ff0000;" />
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label>
+								<label for="discontinued"><spring:message
+										code="computer.disc" /></label>
 								<form:input name="discontinued" type="date" class="form-control"
 									id="discontinued" path="discontinued"
-									placeholder="Discontinued date" />
+									placeholder="${computerDisc} (${datePattern})" />
+								<form:errors path="discontinued" cssClass="error"
+									cssStyle="color: #ff0000;" />
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label>
+								<label for="companyId"><spring:message
+										code="computer.company" /></label>
 								<form:select name="companyId" class="form-control"
 									path="companyId" id="companyId">
 									<option value="0">--</option>
@@ -56,8 +92,11 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
-							or <a href="computerdb" class="btn btn-default">Cancel</a>
+							<input type="submit" value=<spring:message code="add" />
+								class="btn btn-primary">
+							<spring:message code="or" />
+							<a href="computerdb" class="btn btn-default"><spring:message
+									code="cancel" /></a>
 						</div>
 					</form:form>
 				</div>

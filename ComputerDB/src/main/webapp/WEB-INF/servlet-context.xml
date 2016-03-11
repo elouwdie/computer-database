@@ -9,8 +9,8 @@
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  ">
 
-	<context:component-scan base-package="com.excilys.computerdb.controller" />
-
+	<mvc:annotation-driven />
+    <context:component-scan base-package="com.excilys.computerdb.controller, com.excilys.computerdb.validation, com.excilys.computerdb.dto" />
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basename">

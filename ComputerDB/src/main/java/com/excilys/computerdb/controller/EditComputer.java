@@ -1,16 +1,17 @@
 package com.excilys.computerdb.controller;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
-import javax.servlet.ServletException;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,34 +29,40 @@ import com.excilys.computerdb.service.ComputerService;
 @RequestMapping("/editcomputer")
 public class EditComputer {
 
-  static Logger log;
-  private ComputerDto computerDto;
+  public static final Logger LOG = LoggerFactory.getLogger(EditComputer.class);
+
+  private ComputerDto computerDTO;
   @Autowired
   CompanyService companyService;
   @Autowired
   ComputerService computerService;
 
   @RequestMapping(method = RequestMethod.GET)
-  protected String doGet(@RequestParam("computerid") int id, Model model)
-      throws ServletException, IOException {
-
+  protected String doGet(@RequestParam("computerid") int id, Model model) {
+    Locale locale = LocaleContextHolder.getLocale();
     List<Company> companies = companyService.findAll();
     Computer computer = computerService.findById(Long.valueOf(id));
-    computerDto = MapperDtoComputer.computerToDto(computer);
+    computerDTO = MapperDtoComputer.computerToDto(computer, companyService, locale.toString());
 
     model.addAttribute("companies", companies);
-    model.addAttribute("computer", computerDto);
+    model.addAttribute("computerDTO", computerDTO);
 
     return "editcomputer";
   }
 
   @RequestMapping(method = RequestMethod.POST)
   protected String doPost(@ModelAttribute("computerDTO") @Valid ComputerDto computerDTO,
-      ModelMap model) throws MapperException {
+      BindingResult bindingResult) throws MapperException {
 
-    Computer computer = MapperDtoComputer.dtoToComputer(computerDTO, companyService);
-    System.out.println(computer.toString());
-
-    return "editcomputer";
+    Locale locale = LocaleContextHolder.getLocale();
+    if (bindingResult.hasErrors()) {
+      LOG.error("noooooooooooooon");
+      return "editcomputer";
+    } else {
+      Computer computer =
+          MapperDtoComputer.dtoToComputer(computerDTO, companyService, locale.toString());
+      System.out.println(computer.toString());
+      return "redirect:/computerdb";
+    }
   }
 }
