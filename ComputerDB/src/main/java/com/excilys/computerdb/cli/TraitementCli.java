@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.excilys.computerdb.model.Company;
@@ -22,7 +23,9 @@ public class TraitementCli {
   public final Scanner REP_UTILISATEUR = new Scanner(System.in);
   Logger log;
   ClassPathXmlApplicationContext ctx;
+  @Autowired
   ComputerService computerService;
+  @Autowired
   CompanyService companyService;
 
   /**

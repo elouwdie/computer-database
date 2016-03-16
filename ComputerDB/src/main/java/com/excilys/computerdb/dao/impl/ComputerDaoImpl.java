@@ -2,21 +2,27 @@ package com.excilys.computerdb.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.excilys.computerdb.dao.ComputerDao;
 import com.excilys.computerdb.enumeration.EnumSearch;
-import com.excilys.computerdb.mapper.MapperDaoComputer;
 import com.excilys.computerdb.model.Computer;
+import com.excilys.computerdb.model.QCompany;
+import com.excilys.computerdb.model.QComputer;
 import com.excilys.computerdb.page.Page;
 import com.excilys.computerdb.service.impl.DaoService;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class ComputerDaoImpl implements ComputerDao {
 
   public static final String SELECT_COUNT = "SELECT COUNT(*) FROM computer";
-  public static final String JOIN_COMPANY = " LEFT JOIN company ON computer.company_id = company.id";
+  public static final String JOIN_COMPANY =
+      " LEFT JOIN company ON computer.company_id = company.id";
   public static final String WHERE_NAME = " WHERE computer.name like ?";
   public static final String WHERE_COMPANY = " WHERE company.name like ?";
   public static final String WHERE_ID = " WHERE computer.id = ?";
@@ -32,31 +38,33 @@ public class ComputerDaoImpl implements ComputerDao {
 
   private int nbComputers;
 
-  private DataSource dataSource;
+  @PersistenceContext
+  private EntityManager entityManager;
 
-  public void setDataSource(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
+  @Autowired
+  private DataSource dataSource;
 
   @Override
   public int getCount() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    nbComputers = jdbcTemplate.queryForObject(SELECT_COUNT, Integer.class);
-
+    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+    QComputer computer = QComputer.computer;
+    nbComputers = (int) queryFactory.selectFrom(computer).fetchCount();
     return nbComputers;
   }
 
   @Override
   public int getCountBy(EnumSearch search, String name) {
 
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+    QComputer computer = QComputer.computer;
+    QCompany company = QCompany.company;
 
     if (search.equals(EnumSearch.NAME)) {
       nbComputers =
-          jdbcTemplate.queryForObject(SELECT_COUNT + WHERE_NAME, Integer.class, "%" + name + "%");
+          (int) queryFactory.selectFrom(computer).where(computer.name.eq(name)).fetchCount();
     } else {
-      nbComputers =
-          jdbcTemplate.queryForObject(SELECT_COUNT + JOIN_COMPANY + WHERE_COMPANY, Integer.class, "%" + name + "%");
+      nbComputers = (int) queryFactory.selectFrom(computer).leftJoin(computer.company, company)
+          .where(company.name.eq(name)).fetchCount();
     }
     return nbComputers;
   }
@@ -64,41 +72,45 @@ public class ComputerDaoImpl implements ComputerDao {
   @Override
   public List<Computer> findAll(Page page) {
 
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+    QComputer computer = QComputer.computer;
+    QCompany company = QCompany.company;
     List<Computer> computers =
-        jdbcTemplate.query(SELECT + OFFSET_LIMIT, new MapperDaoComputer(), page.getLimit(),
-            page.getStart());
+        queryFactory.selectFrom(computer).leftJoin(computer.company, company)
+            .offset(page.getStart()).fetch();
 
-    return computers;
+    return computers.subList(0, Math.min(computers.size(), page.getLimit()));
   }
 
   @Override
   public Computer findById(long id) {
 
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    Computer computer = (Computer) jdbcTemplate.queryForObject(
-        SELECT + WHERE_ID, new MapperDaoComputer(), id);
+    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+    QComputer computer = QComputer.computer;
+    QCompany company = QCompany.company;
 
-    return computer;
+    return queryFactory.selectFrom(computer).leftJoin(computer.company, company)
+        .where(computer.id.eq(id)).fetchOne();
   }
 
   @Override
   public List<Computer> findByName(EnumSearch search, String name, Page page) {
 
-    String where = null;
+    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+    QComputer computer = QComputer.computer;
+    QCompany company = QCompany.company;
+    List<Computer> computers = null;
 
     if (search.equals(EnumSearch.NAME)) {
-      where = WHERE_NAME;
+      computers = queryFactory.selectFrom(computer).leftJoin(computer.company, company)
+          .where(computer.name.eq(name)).offset(page.getStart()).fetch();
+      System.out.println(computers.size());
     } else {
-      where = WHERE_COMPANY;
+      computers = queryFactory.selectFrom(computer).leftJoin(computer.company, company)
+          .where(company.name.eq(name)).offset(page.getStart()).fetch();
     }
 
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    List<Computer> computers =
-        jdbcTemplate.query(SELECT + where + OFFSET_LIMIT, new MapperDaoComputer(), "%" + name + "%",
-            page.getLimit(), page.getStart());
-
-    return computers;
+    return computers.subList(0, Math.min(computers.size(), page.getLimit()));
   }
 
   @Override

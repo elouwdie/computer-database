@@ -38,7 +38,6 @@ public class DashBoard {
       @RequestParam(value = "search", required = false) String search,
       @RequestParam(value = "searchCompany", required = false) String searchCompany,
       Model model) {
-
     Locale locale = LocaleContextHolder.getLocale();
     String name = null;
     Page page = new Page(1, computerService.getCount(), 10);

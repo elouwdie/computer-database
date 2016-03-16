@@ -12,6 +12,7 @@ public class Main {
    * @param args : Not used here.
    */
   public static void main(String[] args) {
+
     TraitementCli cli = new TraitementCli();
     cli.messageStandard();
   }

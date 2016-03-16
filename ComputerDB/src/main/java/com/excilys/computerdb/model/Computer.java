@@ -1,8 +1,17 @@
 package com.excilys.computerdb.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Class computer : corresponds to an instance of the table computer in the
@@ -10,13 +19,20 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author ecayez
  *
  */
+@Entity
+@Table(name = "computer")
 public class Computer {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+  @JoinColumn(name = "company_id", referencedColumnName = "id")
+  @ManyToOne
   private Company company;
   private String name;
-  private LocalDate introduced;
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
-  private LocalDate discontinued;
+  @Type(type = "timestamp")
+  private Timestamp introduced;
+  @Type(type = "timestamp")
+  private Timestamp discontinued;
 
   /**
    * Creates a new empty computer.
@@ -34,8 +50,8 @@ public class Computer {
    */
   public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
     this.name = name;
-    this.introduced = introduced;
-    this.discontinued = discontinued;
+    this.introduced = Timestamp.valueOf(introduced.toString());
+    this.discontinued = Timestamp.valueOf(discontinued.toString());
     this.company = company;
   }
 
@@ -63,20 +79,36 @@ public class Computer {
     this.name = name;
   }
 
+  /**
+   * .
+   * @return .
+   */
   public LocalDate getIntroduced() {
-    return introduced;
+    if (introduced != null) {
+      return introduced.toLocalDateTime().toLocalDate();
+    } else {
+      return null;
+    }
   }
 
   public void setIntroduced(LocalDate introduced) {
-    this.introduced = introduced;
+    this.introduced = Timestamp.valueOf(introduced.toString());
   }
 
+  /**
+   * .
+   * @return .
+   */
   public LocalDate getDiscontinued() {
-    return discontinued;
+    if (discontinued != null) {
+      return discontinued.toLocalDateTime().toLocalDate();
+    } else {
+      return null;
+    }
   }
 
   public void setDiscontinued(LocalDate discontinued) {
-    this.discontinued = discontinued;
+    this.discontinued = Timestamp.valueOf(discontinued.toString());
   }
 
   @Override
@@ -135,5 +167,4 @@ public class Computer {
     }
     return chaine.toString();
   }
-
 }

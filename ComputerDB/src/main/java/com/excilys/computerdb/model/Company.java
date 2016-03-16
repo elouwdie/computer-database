@@ -1,11 +1,21 @@
 package com.excilys.computerdb.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * Class company : corresponds to an instance of table company in the database.
  * @author ecayez
  *
  */
+@Entity
+@Table(name = "company")
 public class Company {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private long id = 0;
   private String name;
 
@@ -64,5 +74,4 @@ public class Company {
     }
     return false;
   }
-
 }

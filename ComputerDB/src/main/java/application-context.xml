@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
     http://www.springframework.org/schema/context
@@ -13,13 +13,16 @@
 	<tx:annotation-driven proxy-target-class="true"
 		transaction-manager="transactionManager" />
 
-    <!-- Transaction configuration -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="mainDataSource" />
+	<!-- Transaction configuration -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
-	<context:property-placeholder location="classpath:jdbc.properties" />	
+	<context:property-placeholder location="classpath:jdbc.properties" />
+
+	<context:annotation-config />
+	<context:component-scan
+		base-package="com.excilys.computerdb.service.impl, com.excilys.computerdb.dao.impl, com.excilys.computerdb.cli" />
 
 	<!-- BoneCP configuration -->
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
@@ -33,21 +36,38 @@
 		<property name="partitionCount" value="2" />
 		<property name="deregisterDriverOnClose" value="true" />
 	</bean>
-	 
-    <bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
-        <property name="dataSource" ref="mainDataSource"></property>
-    </bean>
- 
-    <bean id="computerService" class="com.excilys.computerdb.service.impl.ComputerServiceImpl">
-        <property name="computerDAO" ref="computerDAO"></property>
-    </bean>
-     
-    <bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl">
-        <property name="dataSource" ref="mainDataSource"></property>
-    </bean>
- 
-    <bean id="companyService" class="com.excilys.computerdb.service.impl.CompanyServiceImpl">
-        <property name="companyDAO" ref="companyDAO"></property>
-        <property name="computerDAO" ref="computerDAO"></property>
-    </bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="mainDataSource" />
+		<property name="persistenceUnitName" value="demoJPAUnit" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.excilys.computerdb.model</value>
+				<value>com.excilys.computerdb.dao.impl</value>
+			</list>
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.archive.autodetection">class,hbm</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
+	</bean>
+
+	<bean id="computerService" class="com.excilys.computerdb.service.impl.ComputerServiceImpl">
+	</bean>
+
+	<bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl" />
+
+	<bean id="companyService" class="com.excilys.computerdb.service.impl.CompanyServiceImpl">
+	</bean>
 </beans>

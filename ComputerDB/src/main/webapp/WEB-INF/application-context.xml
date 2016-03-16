@@ -14,12 +14,14 @@
 		transaction-manager="transactionManager" />
 
 	<!-- Transaction configuration -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="mainDataSource" />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<context:property-placeholder location="classpath:jdbc.properties" />
+	<context:annotation-config />
+	<context:component-scan
+		base-package="com.excilys.computerdb.service.impl, com.excilys.computerdb.dao.impl" />
 
 	<!-- BoneCP configuration -->
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
@@ -34,19 +36,40 @@
 		<property name="deregisterDriverOnClose" value="true" />
 	</bean>
 
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="mainDataSource" />
+		<property name="persistenceUnitName" value="demoJPAUnit" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.excilys.computerdb.model</value>
+				<value>com.excilys.computerdb.dao.impl</value>
+				<value>com.excilys.computerdb.service.impl</value>
+				<value>com.excilys.computerdb.controller</value>
+			</list>
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+			</props>
+		</property>
+	</bean>
+
 	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
-		<property name="dataSource" ref="mainDataSource"></property>
 	</bean>
 
 	<bean id="computerService" class="com.excilys.computerdb.service.impl.ComputerServiceImpl">
-		<property name="computerDAO" ref="computerDAO"></property>
 	</bean>
 
 	<bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl">
-		<property name="dataSource" ref="mainDataSource"></property>
 	</bean>
 
 	<bean id="companyService" class="com.excilys.computerdb.service.impl.CompanyServiceImpl">
-		<property name="companyDAO" ref="companyDAO"></property>
 	</bean>
+
 </beans>
