@@ -11,13 +11,10 @@
 		<checkstyle.version>2.17</checkstyle.version>
 		<compiler-plugin.version>3.5.1</compiler-plugin.version>
 		<dbunit.version>2.5.1</dbunit.version>
-		<guava.version>19.0</guava.version>
 		<hibernate.version>5.1.0.Final</hibernate.version>
 		<java.version>1.8</java.version>
-		<javax.validation>1.1.0.Final</javax.validation>
 		<javadoc.version>2.10.3</javadoc.version>
 		<jstl.version>1.2</jstl.version>
-		<junit.version>4.12</junit.version>
 		<logback.version>1.1.3</logback.version>
 		<mockito.version>1.10.19</mockito.version>
 		<mysql-connector.version>5.1.6</mysql-connector.version>
@@ -35,30 +32,20 @@
 
 		<!-- Test -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
 			<version>${dbunit.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Tests Sélénium -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
 
-		<!-- Mock -->
+		<!-- Mock (tests) -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -66,7 +53,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Log -->
+		<!-- Logs -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
@@ -85,14 +72,7 @@
 			<version>${bonecp.version}</version>
 		</dependency>
 
-		<!-- MySql Java Connector -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql-connector.version}</version>
-		</dependency>
-
-		<!-- Servlet -->
+		<!-- Servlets -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -105,19 +85,7 @@
 			<version>${jstl.version}</version>
 		</dependency>
 
-		<!-- Validation -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>${javax.validation}</version>
-		</dependency>
-
 		<!-- Hibernate -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
@@ -125,21 +93,23 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-c3p0</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		
+
 		<!-- Injection Provider -->
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-        </dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+        <!-- BDD MySQL -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector.version}</version>
+		</dependency>
 
 		<!-- QueryDSL -->
 		<dependency>
@@ -148,7 +118,6 @@
 			<version>${querydsl.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
@@ -158,37 +127,7 @@
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
@@ -196,8 +135,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<!-- Tests Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
 
 	<!-- Spring Bom -->
 	<dependencyManagement>
@@ -215,7 +163,7 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!-- Tests Sélénium -->
+				<!-- Plugin Tests Sélénium -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>selenium-maven-plugin</artifactId>
@@ -225,7 +173,7 @@
 		</pluginManagement>
 
 		<plugins>
-			<!-- Compiler -->
+			<!-- Plugin compiler -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${compiler-plugin.version}</version>
@@ -259,7 +207,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Hibernate annotations -->
+			<!-- Plugin hibernate annotations -->
 			<plugin>
 				<groupId>com.mysema.maven</groupId>
 				<artifactId>apt-maven-plugin</artifactId>
@@ -277,7 +225,7 @@
 				</executions>
 			</plugin>
 
-			<!-- Test compiler -->
+			<!-- Plugin test compiler -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
@@ -292,7 +240,7 @@
 				</executions>
 			</plugin>
 
-			<!-- Checkstyle -->
+			<!-- Plugin checkstyle -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>

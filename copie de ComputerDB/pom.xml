@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.excilys.app</groupId>
+	<artifactId>ComputerDB</artifactId>
+	<version>0.7.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>binding</module>
+		<module>console</module>
+		<module>core</module>
+		<module>persistence</module>
+		<module>service</module>
+		<module>webapp</module>
+	</modules>
+
+	<properties>
+		<apt.version>1.1.3</apt.version>
+		<bonecp.version>0.8.0.RELEASE</bonecp.version>
+		<checkstyle.version>2.17</checkstyle.version>
+		<compiler-plugin.version>3.5.1</compiler-plugin.version>
+		<dbunit.version>2.5.1</dbunit.version>
+		<hibernate.version>5.1.0.Final</hibernate.version>
+		<java.version>1.8</java.version>
+		<javadoc.version>2.10.3</javadoc.version>
+		<jstl.version>1.2</jstl.version>
+		<logback.version>1.1.3</logback.version>
+		<mockito.version>1.10.19</mockito.version>
+		<mysql-connector.version>5.1.6</mysql-connector.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<querydsl.version>4.0.9</querydsl.version>
+		<selenium.version>2.52.0</selenium.version>
+		<selenium-plugin.version>1.0.1</selenium-plugin.version>
+		<servlet.version>3.0.1</servlet.version>
+		<slf4j.version>1.7.18</slf4j.version>
+		<spring.version>4.2.5.RELEASE</spring.version>
+		<surefire-plugin.version>2.12.4</surefire-plugin.version>
+	</properties>
+
+</project>

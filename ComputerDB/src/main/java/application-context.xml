@@ -43,7 +43,6 @@
 		<property name="persistenceUnitName" value="demoJPAUnit" />
 		<property name="packagesToScan">
 			<list>
-				<value>com.excilys.computerdb.model</value>
 				<value>com.excilys.computerdb.dao.impl</value>
 			</list>
 		</property>
@@ -53,9 +52,9 @@
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.archive.autodetection">class,hbm</prop>
-				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
 				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 			</props>
 		</property>
 	</bean>
