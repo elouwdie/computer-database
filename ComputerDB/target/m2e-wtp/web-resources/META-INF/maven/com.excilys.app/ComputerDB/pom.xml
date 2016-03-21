@@ -25,6 +25,7 @@
 		<servlet.version>3.0.1</servlet.version>
 		<slf4j.version>1.7.18</slf4j.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
+		<spring-security.version>4.0.4.RELEASE</spring-security.version>
 		<surefire-plugin.version>2.12.4</surefire-plugin.version>
 	</properties>
 
@@ -104,7 +105,7 @@
 			<version>1</version>
 		</dependency>
 
-        <!-- BDD MySQL -->
+		<!-- BDD MySQL -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -144,6 +145,17 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
 		</dependency>
 	</dependencies>
 

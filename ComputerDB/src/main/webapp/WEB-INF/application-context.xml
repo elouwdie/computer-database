@@ -62,6 +62,12 @@
 
 	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
 	</bean>
+	
+    <bean id="userDao" class="com.excilys.computerdb.dao.impl.UserDaoImpl">
+    </bean>
+    
+    <bean id="userService" class="com.excilys.computerdb.service.impl.UserService">
+    </bean>
 
 	<bean id="computerService" class="com.excilys.computerdb.service.impl.ComputerServiceImpl">
 	</bean>
