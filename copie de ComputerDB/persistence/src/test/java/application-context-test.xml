@@ -9,13 +9,15 @@
     http://www.springframework.org/schema/tx
     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
+   <import resource="application-context.xml"/>
+
 	<context:annotation-config />
-	<context:component-scan base-package="com.excilys.computerdb.service.impl" />
+	<context:component-scan
+		base-package="com.excilys.computerdb.test.dao" />
 
-	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl" />
+    <bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl" />
 
-	<bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl" />
+    <bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl" />
 
-	<bean id="userDao" class="com.excilys.computerdb.dao.impl.UserDaoImpl" />
-
+    <bean id="userDao" class="com.excilys.computerdb.dao.impl.UserDaoImpl" />
 </beans>

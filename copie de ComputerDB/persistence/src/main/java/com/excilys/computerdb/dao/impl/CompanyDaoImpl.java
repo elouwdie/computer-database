@@ -12,10 +12,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class CompanyDaoImpl implements CompanyDao {
 
-  public static final String FIND_ALL = "SELECT * FROM company";
-  public static final String DELETE = "DELETE FROM company WHERE id = ?";
-  public static final String WHERE_ID = " WHERE id = ?";
-
   @PersistenceContext
   private EntityManager entityManager;
 

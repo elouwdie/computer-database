@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excilys.computerdb</groupId>
-	<artifactId>ComputerDB</artifactId>
+	<artifactId>ComputerDatabase</artifactId>
 	<version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -35,6 +35,7 @@
 		<servlet.version>3.0.1</servlet.version>
 		<slf4j.version>1.7.18</slf4j.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
+		<spring-security.version>4.0.4.RELEASE</spring-security.version>
 		<surefire-plugin.version>2.12.4</surefire-plugin.version>
 	</properties>
     

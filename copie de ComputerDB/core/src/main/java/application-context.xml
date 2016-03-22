@@ -8,9 +8,8 @@
 
 	<context:annotation-config />
 	<context:property-placeholder location="classpath:jdbc.properties" />
-	
-	<context:component-scan
-		base-package="com.excilys.computerdb.cli" />
+
+	<context:component-scan base-package="com.excilys.computerdb.cli" />
 
 	<!-- BoneCP configuration -->
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
@@ -46,16 +45,4 @@
 			</props>
 		</property>
 	</bean>
-
-	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
-	</bean>
-
-	<bean id="computerService" class="com.excilys.computerdb.service.impl.ComputerServiceImpl">
-	</bean>
-
-	<bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl" />
-
-	<bean id="companyService" class="com.excilys.computerdb.service.impl.CompanyServiceImpl">
-	</bean>
-
 </beans>

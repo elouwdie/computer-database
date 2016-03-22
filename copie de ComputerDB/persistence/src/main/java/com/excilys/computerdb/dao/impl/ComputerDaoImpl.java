@@ -37,10 +37,10 @@ public class ComputerDaoImpl implements ComputerDao {
 
     if (search.equals(EnumSearch.NAME)) {
       nbComputers =
-          (int) queryFactory.selectFrom(computer).where(computer.name.eq(name)).fetchCount();
+          (int) queryFactory.selectFrom(computer).where(computer.name.contains(name)).fetchCount();
     } else {
       nbComputers = (int) queryFactory.selectFrom(computer).leftJoin(computer.company, company)
-          .where(company.name.eq(name)).fetchCount();
+          .where(company.name.contains(name)).fetchCount();
     }
 
     return nbComputers;
@@ -77,11 +77,11 @@ public class ComputerDaoImpl implements ComputerDao {
 
     if (search.equals(EnumSearch.NAME)) {
       computers = queryFactory.selectFrom(computer).leftJoin(computer.company, company)
-          .where(computer.name.eq(name)).offset(page.getStart()).fetch();
+          .where(computer.name.contains(name)).offset(page.getStart()).fetch();
       System.out.println(computers.size());
     } else {
       computers = queryFactory.selectFrom(computer).leftJoin(computer.company, company)
-          .where(company.name.eq(name)).offset(page.getStart()).fetch();
+          .where(company.name.contains(name)).offset(page.getStart()).fetch();
     }
 
     return computers.subList(0, Math.min(computers.size(), page.getLimit()));

@@ -4,21 +4,19 @@
 
 	<parent>
 		<groupId>com.excilys.computerdb</groupId>
-		<artifactId>ComputerDB</artifactId>
+		<artifactId>ComputerDatabase</artifactId>
 		<version>0.7.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-    
-    <groupId>com.excilys.computerdb</groupId>
-    <artifactId>ComputerDB-service</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
-    
-    
-    <dependencies>
-        <dependency>
-            <groupId>com.excilys.computerdb</groupId>
-            <artifactId>Computerdb-persistence</artifactId>
-            <version>0.7.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+
+	<artifactId>ComputerDatabase-service</artifactId>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.excilys.computerdb</groupId>
+			<artifactId>ComputerDatabase-persistence</artifactId>
+			<version>0.7.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

@@ -1,7 +1,6 @@
 package com.excilys.computerdb.mapper;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import com.excilys.computerdb.mapper.exception.MapperException;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.service.CompanyService;
 import com.excilys.computerdb.validation.DataVerification;
-import com.excilys.computerdb.validation.exception.DataException;
 
 /**
  * Converts a ResultSet to a ComputerDTO object.

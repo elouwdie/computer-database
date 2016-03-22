@@ -2,8 +2,14 @@ package com.excilys.computerdb.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -11,11 +17,23 @@ public class ErrorController {
 
   public static final Logger LOG = LoggerFactory.getLogger(ErrorController.class);
 
-  @RequestMapping(path = "/403")
+  // for 403 access denied page
+  @RequestMapping(value = "/403", method = RequestMethod.GET)
   @ResponseBody
-  public String error403() {
-    LOG.info("custom error handler32");
+  public String accesssDenied(Model model) {
+
+    // check if user is login
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (!(auth instanceof AnonymousAuthenticationToken)) {
+      UserDetails userDetail = (UserDetails) auth.getPrincipal();
+      System.out.println(userDetail);
+
+      model.addAttribute("username", userDetail.getUsername());
+
+    }
+
     return "403";
+
   }
 
   @RequestMapping(path = "/404")
