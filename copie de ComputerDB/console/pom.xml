@@ -3,10 +3,22 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.excilys.app</groupId>
-		<artifactId>ComputerDB-persistence</artifactId>
+		<groupId>com.excilys.computerdb</groupId>
+		<artifactId>ComputerDB</artifactId>
 		<version>0.7.0-SNAPSHOT</version>
-		<relativePath>../binding/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>ComputerDB-console</artifactId>
+    
+    <groupId>com.excilys.computerdb</groupId>
+    <artifactId>ComputerDB-console</artifactId>
+    <version>0.7.0-SNAPSHOT</version>
+    
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.excilys.computerdb</groupId>
+            <artifactId>Computerdb-binding</artifactId>
+            <version>0.7.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

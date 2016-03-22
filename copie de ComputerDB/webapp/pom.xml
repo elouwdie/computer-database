@@ -3,15 +3,25 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.excilys.app</groupId>
-		<artifactId>ComputerDB-persistence</artifactId>
+		<groupId>com.excilys.computerdb</groupId>
+		<artifactId>ComputerDB</artifactId>
 		<version>0.7.0-SNAPSHOT</version>
-		<relativePath>../binding/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
+    
+    <groupId>com.excilys.computerdb</groupId>
 	<artifactId>ComputerDB-webapp</artifactId>
-	<packaging>war</packaging>
+    <packaging>war</packaging>
+    <version>0.7.0-SNAPSHOT</version>
+    
 
-	<dependencies>
+<dependencies>
+    <dependency>
+        <groupId>com.excilys.computerdb</groupId>
+        <artifactId>Computerdb-binding</artifactId>
+        <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    
 		<!-- Tests Sélénium -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
