@@ -1,5 +1,4 @@
 
 # computer-database
 =======
-# computer-database
- dbd444539fcae1c600aa777b2bc90d607edf0922
+Spec : https://github.com/loicortola/spec-cdb
