@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <import resource="classpath*:**/application-context-binding.xml" />
+    <context:component-scan base-package="com.excilys.computerdb.cli" />
+
+	<bean id="computerDAO" class="com.excilys.computerdb.dao.impl.ComputerDaoImpl">
+	</bean>
+
+	<bean id="computerService" class="com.excilys.computerdb.service.impl.ComputerServiceImpl">
+	</bean>
+
+	<bean id="companyDAO" class="com.excilys.computerdb.dao.impl.CompanyDaoImpl" />
+
+	<bean id="companyService" class="com.excilys.computerdb.service.impl.CompanyServiceImpl">
+	</bean>
+</beans>

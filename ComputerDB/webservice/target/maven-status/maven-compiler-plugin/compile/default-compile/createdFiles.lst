@@ -1,0 +1,5 @@
+com/excilys/computerdb/controller/Login.class
+com/excilys/computerdb/controller/AddComputerMenu.class
+com/excilys/computerdb/controller/MainMenu.class
+com/excilys/computerdb/controller/DashBoard.class
+com/excilys/computerdb/controller/ErrorController.class
