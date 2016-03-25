@@ -41,13 +41,6 @@
 			<version>${jstl.version}</version>
 		</dependency>
 
-		<!-- Jersey -->
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>${jersey.version}</version>
-		</dependency>
-
 	</dependencies>
 	<reporting>
 		<outputDirectory>target/site</outputDirectory>

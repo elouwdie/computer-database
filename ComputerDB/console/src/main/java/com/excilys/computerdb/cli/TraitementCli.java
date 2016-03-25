@@ -3,11 +3,15 @@ package com.excilys.computerdb.cli;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import javax.ws.rs.core.MediaType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.excilys.computerdb.mapper.MapperDtoComputer;
 import com.excilys.computerdb.model.Company;
 import com.excilys.computerdb.model.Computer;
 import com.excilys.computerdb.page.Page;
@@ -17,6 +21,9 @@ import com.excilys.computerdb.service.impl.CompanyServiceImpl;
 import com.excilys.computerdb.service.impl.ComputerServiceImpl;
 import com.excilys.computerdb.validation.DataVerification;
 import com.excilys.computerdb.validation.exception.DataException;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 public class TraitementCli {
 
@@ -27,6 +34,11 @@ public class TraitementCli {
   ComputerService computerService;
   @Autowired
   CompanyService companyService;
+
+  Client client = Client.create();
+  String getUrl;
+  WebResource resource;
+  ClientResponse response;
 
   /**
    * Main menu, where the user can choose an action to do.
@@ -84,11 +96,20 @@ public class TraitementCli {
     int nbComputers = computerService.getCount();
     Page page = new Page(1, nbComputers, 30);
     while (page.getNumber() <= page.getTotalNbPages()) {
-      computerService.findAll(page);
-      System.out.println("**********************************");
-      for (Computer c : page.getComputers()) {
-        System.out.println("ID : " + c.getId() + " name : " + c.getName());
+
+      getUrl = "http://localhost:8990/ComputerDatabase-webservice/computers?page="
+          + page.getNumber() + "&records=" + page.getLimit();
+      resource = client.resource(getUrl);
+      response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+      if (response.getStatus() != 200) {
+        throw new RuntimeException("noop : " + response.getStatus());
       }
+
+      System.out.println(response.getEntity(String.class));
+
+      System.out.println("**********************************");
+
       System.out.println("Next page (n) - return back (r)");
       switch (REP_UTILISATEUR.next()) {
         case "n":
@@ -113,11 +134,13 @@ public class TraitementCli {
     do {
       System.out.println("\nEnter the id of the computer : " + "\nr : return back");
       if (REP_UTILISATEUR.hasNextLong()) {
-        Computer computer = null;
-        computer = computerService.findById(REP_UTILISATEUR.nextLong());
-        // Verify if the computer exists
-        if (computer.getName() != null) {
-          System.out.println(computer.toString());
+        getUrl = "http://localhost:8990/ComputerDatabase-webservice/computers/"
+            + REP_UTILISATEUR.nextLong();
+        resource = client.resource(getUrl);
+        response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+        if (response.getStatus() == 200) {
+          System.out.println(response.getEntity(String.class));
           ok = true;
         } else {
           log.error("This ID is not valid.");
@@ -199,7 +222,16 @@ public class TraitementCli {
       }
     }
     // Creates the computer in the database
+
     Computer computer = new Computer(name, intro, discont, company);
+
+    getUrl =
+        "http://localhost:8990/ComputerDatabase-webservice/computers";
+    resource = client.resource(getUrl);
+    response =
+        resource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, MapperDtoComputer
+            .computerToDto(computer, companyService, LocaleContextHolder.getLocale().toString()));
+
     computerService.create(computer);
   }
 

@@ -1,11 +1,13 @@
 package com.excilys.computerdb.dto;
 
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.excilys.computerdb.validation.annotations.Date;
 
+@XmlRootElement
 public class ComputerDto {
 
   private long id;
